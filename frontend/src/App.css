@@ -233,7 +233,32 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   gap: 10px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.sub-pills-subbar {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sub-pills-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-secondary);
+  margin-right: 6px;
+  letter-spacing: 0.3px;
 }
 
 .pill-btn {
@@ -246,6 +271,11 @@
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition-fast);
+}
+
+.pill-btn-sm {
+  padding: 5px 14px;
+  font-size: 0.8rem;
 }
 
 .pill-btn:hover, .pill-btn.active {

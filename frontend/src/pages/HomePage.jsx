@@ -99,10 +99,10 @@ export const HomePage = ({ searchQuery }) => {
 
         {/* Sub-Category Pills Bar if a Main Category is Selected */}
         {selectedCategory && availableSubCategories.length > 0 && (
-          <div className="sub-pills-subbar mt-4 pt-3 border-t border-glass flex items-center gap-2 overflow-x-auto">
-            <span className="text-xs font-bold text-pink mr-1">Sub-Categories:</span>
+          <div className="sub-pills-subbar">
+            <span className="sub-pills-label">Sub-Categories:</span>
             <button
-              className={`pill-btn text-xs ${selectedSubCategory === null ? 'active' : ''}`}
+              className={`pill-btn pill-btn-sm ${selectedSubCategory === null ? 'active' : ''}`}
               onClick={() => setSelectedSubCategory(null)}
             >
               All {currentCategoryObj.name}
@@ -110,7 +110,7 @@ export const HomePage = ({ searchQuery }) => {
             {availableSubCategories.map(sub => (
               <button
                 key={sub.id}
-                className={`pill-btn text-xs ${selectedSubCategory === sub.name.toLowerCase() ? 'active' : ''}`}
+                className={`pill-btn pill-btn-sm ${selectedSubCategory === sub.name.toLowerCase() ? 'active' : ''}`}
                 onClick={() => setSelectedSubCategory(selectedSubCategory === sub.name.toLowerCase() ? null : sub.name.toLowerCase())}
               >
                 {sub.name}
