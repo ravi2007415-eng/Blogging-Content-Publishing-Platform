@@ -313,3 +313,20 @@ Be sure to check out the **Upcoming Events** section to register for spectator p
     isBookmarked: true,
   }
 ];
+
+export const MOCK_COMMENTS = [
+  {
+    id: 1,
+    content: "Outstanding analysis on the upcoming volleyball championship roster! Looking forward to seeing the defensive spikes.",
+    authorName: "Marcus Vance",
+    authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
+    createdAt: "2026-08-07T12:00:00Z"
+  },
+  {
+    id: 2,
+    content: "Event-driven microservices with Spring Boot and Kafka have completely stabilized our production pipelines.",
+    authorName: "Dr. Elena Rostova",
+    authorAvatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80",
+    createdAt: "2026-07-29T14:15:00Z"
+  }
+];
