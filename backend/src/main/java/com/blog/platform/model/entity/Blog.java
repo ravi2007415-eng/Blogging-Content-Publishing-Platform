@@ -44,6 +44,9 @@ public class Blog {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Column(name = "sub_category_name", length = 80)
+    private String subCategoryName;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "blog_tags",
@@ -94,6 +97,9 @@ public class Blog {
 
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
+
+    public String getSubCategoryName() { return subCategoryName; }
+    public void setSubCategoryName(String subCategoryName) { this.subCategoryName = subCategoryName; }
 
     public Set<Tag> getTags() { return tags; }
     public void setTags(Set<Tag> tags) { this.tags = tags; }
