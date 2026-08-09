@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { SpeedMonogram } from '../components/SpeedMonogram';
 import { Feather, Lock, Mail, User, ArrowRight } from 'lucide-react';
 
 export const RegisterPage = () => {
@@ -12,7 +13,7 @@ export const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const fakeToken = 'nexus_jwt_token_sample_456';
+    const fakeToken = 'keryx_jwt_token_sample_456';
     const fakeUser = {
       id: Date.now(),
       name: name || 'New Creator',
@@ -28,8 +29,8 @@ export const RegisterPage = () => {
     <div className="auth-page-container">
       <div className="auth-card glass-panel">
         <div className="auth-header">
-          <div className="logo-icon">
-            <Feather className="icon-feather" />
+          <div className="logo-icon speed-logo-wrapper">
+            <SpeedMonogram size={28} />
           </div>
           <h2>Create Account</h2>
           <p className="text-muted">Join the global publishing network for engineers</p>

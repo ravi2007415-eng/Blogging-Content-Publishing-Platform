@@ -2,7 +2,8 @@ import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
-import { Sun, Moon, Feather, Search, PenSquare, Bookmark, User, LogOut, Layers, Home } from 'lucide-react';
+import { Sun, Moon, Search, PenSquare, Bookmark, User, LogOut, Layers, Home } from 'lucide-react';
+import { SpeedMonogram } from './SpeedMonogram';
 
 export const Navbar = ({ searchQuery, setSearchQuery }) => {
   const { user, isAuthenticated, logout } = useContext(AuthContext);
@@ -22,10 +23,10 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
       <div className="nav-container">
         {/* Brand Logo */}
         <Link to="/" className="brand-logo">
-          <div className="logo-icon">
-            <Feather className="icon-feather" />
+          <div className="logo-icon speed-logo-wrapper">
+            <SpeedMonogram size={28} />
           </div>
-          <span className="logo-text">Nexus<span className="logo-dot">.</span></span>
+          <span className="logo-text">Keryx<span className="logo-dot">.</span></span>
         </Link>
 
         {/* Global Search Bar */}
@@ -90,7 +91,7 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
                 <div className="dropdown-menu glass-panel">
                   <div className="dropdown-header">
                     <p className="user-name">{user?.name || 'Developer'}</p>
-                    <p className="user-email">{user?.email || 'user@nexus.dev'}</p>
+                    <p className="user-email">{user?.email || 'user@keryx.dev'}</p>
                   </div>
                   <hr className="dropdown-divider" />
                   <Link

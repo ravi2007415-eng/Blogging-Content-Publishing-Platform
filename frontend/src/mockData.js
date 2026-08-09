@@ -36,7 +36,7 @@ Adopting event-driven principles requires a mindset shift from state mutation to
     author: {
       id: 1,
       name: 'Alex Rivera',
-      email: 'alex@nexus.dev',
+      email: 'alex@keryx.dev',
       bio: 'Principal Systems Architect building distributed cloud architectures.',
       avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
     },
@@ -83,7 +83,7 @@ By combining robust tool validation and self-reflection loops, AI agents can rel
     author: {
       id: 2,
       name: 'Dr. Elena Rostova',
-      email: 'elena@nexus.dev',
+      email: 'elena@keryx.dev',
       bio: 'AI Researcher focused on LLM Reasoning and Multi-Agent Orchestration.',
       avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
     },
@@ -124,7 +124,7 @@ By combining robust tool validation and self-reflection loops, AI agents can rel
     author: {
       id: 3,
       name: 'Marcus Vance',
-      email: 'marcus@nexus.dev',
+      email: 'marcus@keryx.dev',
       bio: 'Lead Frontend Engineer & Creative UI Technologist.',
       avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
     },
@@ -150,7 +150,7 @@ When developers push changes to Git repositories, automated operators continuous
     author: {
       id: 1,
       name: 'Alex Rivera',
-      email: 'alex@nexus.dev',
+      email: 'alex@keryx.dev',
       bio: 'Principal Systems Architect building distributed cloud architectures.',
       avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
     },

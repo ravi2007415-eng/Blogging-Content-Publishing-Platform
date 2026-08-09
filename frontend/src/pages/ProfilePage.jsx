@@ -25,7 +25,7 @@ export const ProfilePage = () => {
           <div className="profile-text">
             <h2>{user?.name || 'Alex Rivera'}</h2>
             <p className="profile-email">
-              <Mail size={14} /> {user?.email || 'alex@nexus.dev'}
+              <Mail size={14} /> {user?.email || 'alex@keryx.dev'}
             </p>
             <div className="profile-role-badge badge badge-primary">
               <ShieldCheck size={14} />

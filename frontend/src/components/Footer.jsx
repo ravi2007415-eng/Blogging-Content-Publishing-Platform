@@ -1,6 +1,7 @@
 import React from 'react';
-import { Feather, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SpeedMonogram } from './SpeedMonogram';
 
 export const Footer = () => {
   return (
@@ -8,10 +9,10 @@ export const Footer = () => {
       <div className="footer-container">
         <div className="footer-brand">
           <div className="brand-logo">
-            <div className="logo-icon">
-              <Feather className="icon-feather" />
+            <div className="logo-icon speed-logo-wrapper">
+              <SpeedMonogram size={28} />
             </div>
-            <span className="logo-text">Nexus<span className="logo-dot">.</span></span>
+            <span className="logo-text">Keryx<span className="logo-dot">.</span></span>
           </div>
           <p className="footer-description">
             A state-of-the-art blogging & content publishing platform for modern developers, researchers, and tech leaders.
@@ -41,7 +42,7 @@ export const Footer = () => {
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} Nexus Publishing Inc. Built with <Heart size={14} className="heart-icon" /> for high performance engineering.</p>
+        <p>&copy; {new Date().getFullYear()} Keryx Publishing Inc. Built with <Heart size={14} className="heart-icon" /> for high performance engineering.</p>
       </div>
     </footer>
   );
