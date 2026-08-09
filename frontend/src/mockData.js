@@ -330,3 +330,59 @@ export const MOCK_COMMENTS = [
     createdAt: "2026-07-29T14:15:00Z"
   }
 ];
+
+export const MOCK_NEWS = [
+  {
+    id: 301,
+    title: 'BREAKING: National Volleyball Championship Finals Scheduled for Next Month in San Francisco',
+    slug: 'national-volleyball-championship-finals-scheduled-next-month',
+    summary: 'The National Volleyball Federation confirms California venue for next month’s tournament featuring top 16 state teams.',
+    content: `San Francisco will host next month’s highly anticipated National Volleyball Championship Finals at the Pacific Sports Arena. Sixteen elite teams across the nation will compete for the gold trophy with live TV broadcast coverage.
+
+### Tournament Highlights:
+1. **Defending Champions**: Golden State Spikers return with star setter Alex Rivera.
+2. **Key Matchups**: Opening round pits California against Texas.
+3. **Spectator Pass**: Early registration is now open in the Events hub.`,
+    categoryName: 'Sports',
+    subCategoryName: 'Volleyball',
+    imageUrl: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&w=1200&q=80',
+    isBreaking: true,
+    isTrending: true,
+    isTopStory: true,
+    authorName: 'Keryx Sports Desk',
+    viewsCount: 4120,
+    publishedAt: '2026-08-08T18:30:00Z'
+  },
+  {
+    id: 302,
+    title: 'Next-Gen Autonomous AI Models Outperform Humans in Code Refactoring Benchmarks',
+    slug: 'next-gen-autonomous-ai-models-outperform-code-refactoring',
+    summary: 'Researchers announce state-of-the-art benchmarks for autonomous coding agents with self-reflection capabilities.',
+    content: `AI research labs have revealed a breakthrough in multi-agent coding engines capable of automatically refactoring multi-million line codebases with zero regression bugs.`,
+    categoryName: 'Technology',
+    subCategoryName: 'AI & ML',
+    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+    isBreaking: false,
+    isTrending: true,
+    isTopStory: true,
+    authorName: 'Dr. Elena Rostova',
+    viewsCount: 3280,
+    publishedAt: '2026-08-08T14:15:00Z'
+  },
+  {
+    id: 303,
+    title: 'Global Tech Leaders Announce Open Standard for Real-Time Event Streaming Protocols',
+    slug: 'global-tech-leaders-open-standard-event-streaming',
+    summary: 'Major cloud providers collaborate to establish unified pub/sub protocols for low-latency web applications.',
+    content: `A coalition of enterprise software companies today announced a unified open protocol standard for real-time data streaming and server-sent events.`,
+    categoryName: 'Technology',
+    subCategoryName: 'Cloud',
+    imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80',
+    isBreaking: false,
+    isTrending: false,
+    isTopStory: true,
+    authorName: 'Alex Rivera',
+    viewsCount: 1950,
+    publishedAt: '2026-08-07T09:45:00Z'
+  }
+];

@@ -9,6 +9,8 @@ import { EventsPage } from './pages/EventsPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { AuthorDashboardPage } from './pages/AuthorDashboardPage';
 import { UserDashboardPage } from './pages/UserDashboardPage';
+import { NewsPage } from './pages/NewsPage';
+import { NewsDetailPage } from './pages/NewsDetailPage';
 import { BlogDetailPage } from './pages/BlogDetailPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
@@ -26,6 +28,8 @@ export default function App() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<HomePage searchQuery={searchQuery} />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/news/:idOrSlug" element={<NewsDetailPage />} />
           <Route path="/category/:categorySlug" element={<CategorySubDashboardPage />} />
           <Route path="/category/:categorySlug/:subCategorySlug" element={<CategorySubDashboardPage />} />
           <Route path="/events" element={<EventsPage />} />

@@ -6,7 +6,7 @@ import { CategoryContext } from '../context/CategoryContext';
 import { NotificationContext } from '../context/NotificationContext';
 import { 
   Sun, Moon, Search, PenSquare, Bookmark, User, LogOut, Layers, Home, 
-  Calendar, Bell, Shield, ChevronDown, CheckCheck, Sparkles 
+  Calendar, Bell, Shield, ChevronDown, CheckCheck, Sparkles, Newspaper 
 } from 'lucide-react';
 import { SpeedMonogram } from './SpeedMonogram';
 
@@ -59,6 +59,11 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
           <Link to="/" className="nav-link">
             <Home size={18} />
             <span>Home</span>
+          </Link>
+
+          <Link to="/news" className="nav-link">
+            <Newspaper size={18} />
+            <span>News</span>
           </Link>
 
           {/* Dynamic Category & Sub-Category Dropdown */}
