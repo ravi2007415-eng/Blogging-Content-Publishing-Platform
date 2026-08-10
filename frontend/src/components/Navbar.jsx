@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { CategoryContext } from '../context/CategoryContext';
 import { NotificationContext } from '../context/NotificationContext';
+import { SpeedMonogram } from './SpeedMonogram';
 import { 
   Sun, Moon, Search, PenSquare, Bookmark, User, LogOut, Layers, Home, 
   Calendar, Bell, Shield, ChevronDown, CheckCheck, Sparkles, Newspaper, Compass
@@ -33,14 +34,13 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
   return (
     <nav className="wp-navbar sticky-nav">
       <div className="nav-container">
-        {/* Brand Logo - Keryx */}
+        {/* Brand Logo - SpeedMonogram Keryx */}
         <Link to="/" className="brand-logo wp-brand">
-          <div className="wp-logo-icon">
-            <span className="wp-mark">K</span>
+          <div className="speed-logo-wrapper flex items-center justify-center">
+            <SpeedMonogram size={28} />
           </div>
           <div className="wp-logo-text">
-            <span className="wp-main-name">Keryx</span>
-            <span className="wp-sub-name">.dev</span>
+            <span className="wp-main-name font-bold tracking-tight">Keryx</span>
           </div>
         </Link>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Globe, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SpeedMonogram } from './SpeedMonogram';
 
 export const Footer = () => {
   return (
@@ -9,12 +10,11 @@ export const Footer = () => {
         {/* Left Column: Keryx Branding */}
         <div className="wp-footer-brand">
           <Link to="/" className="brand-logo wp-brand">
-            <div className="wp-logo-icon">
-              <span className="wp-mark">K</span>
+            <div className="speed-logo-wrapper flex items-center justify-center">
+              <SpeedMonogram size={28} />
             </div>
             <div className="wp-logo-text">
-              <span className="wp-main-name">Keryx</span>
-              <span className="wp-sub-name">.dev</span>
+              <span className="wp-main-name font-bold tracking-tight">Keryx</span>
             </div>
           </Link>
           <p className="wp-footer-desc">

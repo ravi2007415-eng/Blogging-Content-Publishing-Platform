@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { NotificationContext } from '../context/NotificationContext';
 import { ThemeContext } from '../context/ThemeContext';
+import { SpeedMonogram } from './SpeedMonogram';
 import { 
   Plus, Compass, LayoutDashboard, Shield, Bell, Sun, Moon 
 } from 'lucide-react';
@@ -22,7 +23,7 @@ export const WpAdminBar = () => {
         {/* Left Side: Keryx Logo, My Site, Write */}
         <div className="wp-admin-left">
           <Link to="/" className="wp-admin-brand" title="Keryx Home">
-            <span className="wp-logo-circle">K</span>
+            <SpeedMonogram size={18} />
             <span className="wp-brand-text">Keryx</span>
           </Link>
 
