@@ -15,7 +15,9 @@ import {
   ShieldCheck, 
   User, 
   Github, 
-  Loader2 
+  Loader2,
+  Key,
+  X
 } from 'lucide-react';
 
 export const LoginPage = () => {
@@ -28,24 +30,26 @@ export const LoginPage = () => {
   const [success, setSuccess] = useState('');
   const [activeDemo, setActiveDemo] = useState('author');
 
+  // Google OAuth Client ID state
+  const [customClientId, setCustomClientId] = useState('');
+  const [showClientIdModal, setShowClientIdModal] = useState(false);
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const getEffectiveClientId = () => {
+    const envId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const localId = localStorage.getItem('GOOGLE_CLIENT_ID');
+    if (localId && localId.trim()) return localId.trim();
+    if (envId && !envId.includes('YOUR_GOOGLE_CLIENT_ID')) return envId.trim();
+    return '';
+  };
+
   // Load Google Identity Services SDK on page load
   useEffect(() => {
-    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    if (googleClientId && !googleClientId.includes('YOUR_GOOGLE_CLIENT_ID')) {
-      if (!window.google && !document.getElementById('google-gsi-script')) {
-        const script = document.createElement('script');
-        script.id = 'google-gsi-script';
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        script.onload = () => initGoogleSignIn(googleClientId);
-        document.body.appendChild(script);
-      } else if (window.google?.accounts?.id) {
-        initGoogleSignIn(googleClientId);
-      }
+    const clientId = getEffectiveClientId();
+    if (clientId) {
+      loadGoogleGsiScript(clientId);
     }
 
     // Check if returning from Google OAuth2 implicit redirect (#id_token=...)
@@ -58,6 +62,20 @@ export const LoginPage = () => {
       }
     }
   }, []);
+
+  const loadGoogleGsiScript = (clientId) => {
+    if (!window.google && !document.getElementById('google-gsi-script')) {
+      const script = document.createElement('script');
+      script.id = 'google-gsi-script';
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => initGoogleSignIn(clientId);
+      document.body.appendChild(script);
+    } else if (window.google?.accounts?.id) {
+      initGoogleSignIn(clientId);
+    }
+  };
 
   const initGoogleSignIn = (clientId) => {
     try {
@@ -110,28 +128,19 @@ export const LoginPage = () => {
     }
   };
 
-  const handleGoogleButtonClick = () => {
-    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
-    if (!googleClientId || googleClientId.includes('YOUR_GOOGLE_CLIENT_ID')) {
-      setError(
-        'Google Client ID is missing. Please add VITE_GOOGLE_CLIENT_ID to your frontend/.env file and restart the dev server to enable live Google account selection.'
-      );
-      return;
-    }
-
+  const triggerGoogleAuthScreen = (clientId) => {
     if (window.google?.accounts?.id) {
       window.google.accounts.id.initialize({
-        client_id: googleClientId,
+        client_id: clientId,
         callback: handleGoogleCallback,
       });
 
       window.google.accounts.id.prompt((notification) => {
         if (notification.isNotDisplayed() || notification.isSkippedMomentary()) {
-          // Open direct Google OAuth 2.0 Account Selection Popup / Redirect
+          // Open direct Google OAuth 2.0 Account Selection Screen
           const redirectUri = encodeURIComponent(window.location.origin + '/login');
           const scope = encodeURIComponent('email profile openid');
-          const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=${scope}&nonce=${Date.now()}`;
+          const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=${scope}&nonce=${Date.now()}`;
           window.location.href = authUrl;
         }
       });
@@ -139,9 +148,39 @@ export const LoginPage = () => {
       // Direct Google OAuth2 Account Selection Screen
       const redirectUri = encodeURIComponent(window.location.origin + '/login');
       const scope = encodeURIComponent('email profile openid');
-      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=${scope}&nonce=${Date.now()}`;
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=id_token&scope=${scope}&nonce=${Date.now()}`;
       window.location.href = authUrl;
     }
+  };
+
+  const handleGoogleButtonClick = () => {
+    const clientId = getEffectiveClientId();
+
+    if (!clientId) {
+      setShowClientIdModal(true);
+      return;
+    }
+
+    loadGoogleGsiScript(clientId);
+    triggerGoogleAuthScreen(clientId);
+  };
+
+  const handleSaveCustomClientId = (e) => {
+    e.preventDefault();
+    if (!customClientId || !customClientId.includes('.apps.googleusercontent.com')) {
+      setError('Please enter a valid Google OAuth Client ID ending with .apps.googleusercontent.com');
+      return;
+    }
+
+    localStorage.setItem('GOOGLE_CLIENT_ID', customClientId.trim());
+    setShowClientIdModal(false);
+    setError('');
+    setSuccess('Google Client ID saved! Triggering Google Sign-In...');
+
+    loadGoogleGsiScript(customClientId.trim());
+    setTimeout(() => {
+      triggerGoogleAuthScreen(customClientId.trim());
+    }, 400);
   };
 
   // Demo accounts for evaluation
@@ -374,6 +413,112 @@ export const LoginPage = () => {
         </p>
 
       </div>
+
+      {/* Google Client ID Config Modal */}
+      {showClientIdModal && (
+        <div className="modal-backdrop fade-in" style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.75)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '1rem'
+        }}>
+          <div className="modal-card glass-panel" style={{
+            maxWidth: '480px',
+            width: '100%',
+            background: 'var(--wp-surface, #1e1e1e)',
+            border: '1px solid var(--wp-border, #333)',
+            borderRadius: '12px',
+            padding: '1.75rem',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+            color: '#fff'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Key size={20} style={{ color: '#4285F4' }} />
+                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 600 }}>Google OAuth Client ID</h3>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setShowClientIdModal(false)}
+                style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <p style={{ fontSize: '0.9rem', color: '#ccc', lineHeight: '1.5', marginBottom: '1.25rem' }}>
+              To open the official Google account selection screen, enter your Google Cloud Console Client ID below or add it to <code>frontend/.env</code> as <code>VITE_GOOGLE_CLIENT_ID</code>.
+            </p>
+
+            <form onSubmit={handleSaveCustomClientId}>
+              <div className="form-group" style={{ marginBottom: '1.25rem' }}>
+                <label className="form-label" style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: '#aaa' }}>
+                  Google Client ID (.apps.googleusercontent.com)
+                </label>
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="1234567890-xyz.apps.googleusercontent.com"
+                  value={customClientId}
+                  onChange={(e) => setCustomClientId(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: '1px solid #444',
+                    background: '#121212',
+                    color: '#fff',
+                    fontSize: '0.9rem'
+                  }}
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowClientIdModal(false)}
+                  className="btn"
+                  style={{
+                    padding: '0.6rem 1.2rem',
+                    borderRadius: '6px',
+                    border: '1px solid #444',
+                    background: 'transparent',
+                    color: '#ccc',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{
+                    padding: '0.6rem 1.2rem',
+                    borderRadius: '6px',
+                    background: '#3858e9',
+                    color: '#fff',
+                    border: 'none',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Connect & Sign In
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
