@@ -1,49 +1,74 @@
 import React from 'react';
-import { Heart } from 'lucide-react';
+import { Heart, Globe, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { SpeedMonogram } from './SpeedMonogram';
 
 export const Footer = () => {
   return (
-    <footer className="footer-panel glass-panel">
-      <div className="footer-container">
-        <div className="footer-brand">
-          <div className="brand-logo">
-            <div className="logo-icon speed-logo-wrapper">
-              <SpeedMonogram size={28} />
+    <footer className="wp-footer">
+      <div className="wp-footer-container">
+        {/* Left Column: WordPress Branding */}
+        <div className="wp-footer-brand">
+          <Link to="/" className="brand-logo wp-brand">
+            <div className="wp-logo-icon">
+              <span className="wp-mark">W</span>
             </div>
-            <span className="logo-text">Keryx<span className="logo-dot">.</span></span>
-          </div>
-          <p className="footer-description">
-            A state-of-the-art blogging & content publishing platform for modern developers, researchers, and tech leaders.
+            <div className="wp-logo-text">
+              <span className="wp-main-name">WordPress</span>
+              <span className="wp-sub-name">.com</span>
+            </div>
+          </Link>
+          <p className="wp-footer-desc">
+            WordPress powers over 43% of the web. From personal blogs to enterprise news outlets, create and grow your site with built-in speed, security, and freedom.
           </p>
+          <div className="wp-footer-badge-pill">
+            <Globe size={14} />
+            <span>English (US)</span>
+          </div>
         </div>
 
-        <div className="footer-links-grid">
-          <div className="footer-col">
-            <h4>Platform</h4>
-            <Link to="/">Latest Articles</Link>
-            <Link to="/explore">Explore Categories</Link>
-            <Link to="/explore">Featured Tech</Link>
+        {/* Right Columns: Category Links */}
+        <div className="wp-footer-columns">
+          <div className="wp-footer-col">
+            <h4>Products</h4>
+            <Link to="/">WordPress Reader</Link>
+            <Link to="/explore">Block Editor</Link>
+            <Link to="/explore">Themes & Templates</Link>
+            <Link to="/events">Tech Events</Link>
           </div>
-          <div className="footer-col">
-            <h4>Community</h4>
-            <Link to="/write">Write a Story</Link>
-            <Link to="/register">Join Platform</Link>
-            <Link to="/bookmarks">Saved Articles</Link>
+          <div className="wp-footer-col">
+            <h4>Resources</h4>
+            <Link to="/news">News Desk</Link>
+            <Link to="/explore">Topic Taxonomy</Link>
+            <Link to="/write">Start Writing</Link>
+            <Link to="/register">Create Account</Link>
           </div>
-          <div className="footer-col">
-            <h4>Stack</h4>
-            <a href="https://spring.io" target="_blank" rel="noreferrer">Spring Boot 3</a>
-            <a href="https://react.dev" target="_blank" rel="noreferrer">React 18 & Vite</a>
-            <a href="https://postgre.org" target="_blank" rel="noreferrer">PostgreSQL & Redis</a>
+          <div className="wp-footer-col">
+            <h4>Technology</h4>
+            <a href="https://spring.io" target="_blank" rel="noreferrer">
+              Spring Boot 3 <ArrowUpRight size={12} />
+            </a>
+            <a href="https://react.dev" target="_blank" rel="noreferrer">
+              React 18 & Vite <ArrowUpRight size={12} />
+            </a>
+            <a href="https://h2database.com" target="_blank" rel="noreferrer">
+              H2 & JPA Storage <ArrowUpRight size={12} />
+            </a>
           </div>
         </div>
       </div>
 
-      <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} Keryx Publishing Inc. Built with <Heart size={14} className="heart-icon" /> for high performance engineering.</p>
+      <div className="wp-footer-bottom">
+        <div className="wp-footer-copyright">
+          <span className="wp-footer-bold">Powered by WordPress.com</span> • &copy; {new Date().getFullYear()} Keryx Publishing Engine. All rights reserved.
+        </div>
+        <div className="wp-footer-bottom-links">
+          <Link to="/explore">Privacy</Link>
+          <Link to="/explore">Terms of Service</Link>
+          <Link to="/explore">Security</Link>
+        </div>
       </div>
     </footer>
   );
 };
+
+export default Footer;

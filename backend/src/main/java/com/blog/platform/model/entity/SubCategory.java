@@ -3,40 +3,41 @@ package com.blog.platform.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "sub_categories")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Category {
+public class SubCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, length = 80)
     private String name;
 
-    @Column(nullable = false, unique = true, length = 60)
+    @Column(nullable = false, length = 100)
     private String slug;
 
     @Column(length = 255)
     private String description;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<SubCategory> subCategories = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnoreProperties({"subCategories", "hibernateLazyInitializer", "handler"})
+    private Category category;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public Category() {}
+    public SubCategory() {}
 
-    public Category(Long id, String name, String slug, String description) {
+    public SubCategory(Long id, String name, String slug, String description, Category category) {
         this.id = id;
         this.name = name;
         this.slug = slug;
         this.description = description;
+        this.category = category;
     }
 
     public Long getId() { return id; }
@@ -51,10 +52,9 @@ public class Category {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public List<SubCategory> getSubCategories() { return subCategories; }
-    public void setSubCategories(List<SubCategory> subCategories) { this.subCategories = subCategories; }
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
-

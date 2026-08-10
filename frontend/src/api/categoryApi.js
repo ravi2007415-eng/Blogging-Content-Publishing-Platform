@@ -17,4 +17,13 @@ export const categoryApi = {
     const res = await axiosInstance.delete(`/categories/${id}`);
     return res.data;
   },
+  createSubCategory: async (categoryId, subCategoryData) => {
+    const res = await axiosInstance.post(`/categories/${categoryId}/subcategories`, subCategoryData);
+    return res.data;
+  },
+  deleteSubCategory: async (subCategoryId) => {
+    const res = await axiosInstance.delete(`/categories/subcategories/${subCategoryId}`);
+    return res.data;
+  },
 };
+

@@ -9,7 +9,7 @@ A modern, full-stack, enterprise-grade Blogging and Content Publishing Platform 
 ```mermaid
 graph TD
     subgraph Client Tier
-        UI["React SPA (Vite + Vanilla CSS)"]
+        UI["React SPA (Vite + WordPress.com Styling)"]
         Router["React Router v6"]
         Axios["Axios Client + JWT Interceptors"]
     end
@@ -25,6 +25,8 @@ graph TD
         BlogCtrl["BlogController"]
         UserCtrl["UserController"]
         AdminCtrl["AdminController"]
+        NewsCtrl["NewsController"]
+        EventCtrl["EventController"]
     end
 
     subgraph Service Layer
@@ -32,16 +34,20 @@ graph TD
         BlogSvc["BlogServiceImpl"]
         UserSvc["UserServiceImpl"]
         AdminSvc["AdminServiceImpl"]
+        NewsSvc["NewsServiceImpl"]
+        EventSvc["EventServiceImpl"]
     end
 
     subgraph Data Access Layer
         UserRepo["UserRepository"]
         BlogRepo["BlogRepository"]
         CommentRepo["CommentRepository"]
+        NewsRepo["NewsRepository"]
+        EventRepo["EventRepository"]
     end
 
     subgraph Database Tier
-        DB[("H2 / MySQL Database")]
+        DB[("MySQL 8.0 / H2 Database")]
     end
 
     UI --> Router
@@ -49,21 +55,27 @@ graph TD
     Axios -->|HTTP Requests / Bearer JWT| CORS
     CORS --> SecFilter
     SecFilter --> JWTFilter
-    JWTFilter --> AuthCtrl & BlogCtrl & UserCtrl & AdminCtrl
+    JWTFilter --> AuthCtrl & BlogCtrl & UserCtrl & AdminCtrl & NewsCtrl & EventCtrl
 
     AuthCtrl --> AuthSvc
     BlogCtrl --> BlogSvc
     UserCtrl --> UserSvc
     AdminCtrl --> AdminSvc
+    NewsCtrl --> NewsSvc
+    EventCtrl --> EventSvc
 
     AuthSvc --> UserRepo
     BlogSvc --> BlogRepo & CommentRepo
     UserSvc --> UserRepo
     AdminSvc --> UserRepo & BlogRepo
+    NewsSvc --> NewsRepo
+    EventSvc --> EventRepo
 
     UserRepo --> DB
     BlogRepo --> DB
     CommentRepo --> DB
+    NewsRepo --> DB
+    EventRepo --> DB
 ```
 
 ---
@@ -77,6 +89,7 @@ erDiagram
     USERS ||--o{ LIKES : "places"
     USERS ||--o{ BOOKMARKS : "stores"
 
+    CATEGORIES ||--o{ SUB_CATEGORIES : "contains"
     CATEGORIES ||--o{ BLOGS : "classifies"
 
     BLOGS ||--o{ BLOG_TAGS : "has"
@@ -93,20 +106,34 @@ erDiagram
         string password
         string full_name
         string role
+        boolean enabled
     }
 
     CATEGORIES {
         bigint id PK
         string name UK
         string slug UK
+        string description
+    }
+
+    SUB_CATEGORIES {
+        bigint id PK
+        string name
+        string slug
+        string description
+        bigint category_id FK
     }
 
     BLOGS {
         bigint id PK
         string title
         string slug UK
+        string summary
         text content
+        string cover_image_url
         string status
+        integer views_count
+        string sub_category_name
         bigint author_id FK
         bigint category_id FK
     }
@@ -117,11 +144,53 @@ erDiagram
         string slug UK
     }
 
+    BLOG_TAGS {
+        bigint blog_id PK, FK
+        bigint tag_id PK, FK
+    }
+
     COMMENTS {
         bigint id PK
         text content
         bigint blog_id FK
         bigint user_id FK
+    }
+
+    LIKES {
+        bigint id PK
+        bigint blog_id FK
+        bigint user_id FK
+    }
+
+    BOOKMARKS {
+        bigint id PK
+        bigint blog_id FK
+        bigint user_id FK
+    }
+
+    NEWS {
+        bigint id PK
+        string title
+        string slug UK
+        text summary
+        text content
+        string category_name
+        string sub_category_name
+        string image_url
+        boolean is_breaking
+        boolean is_trending
+        boolean is_top_story
+    }
+
+    EVENTS {
+        bigint id PK
+        string title
+        text description
+        string category_name
+        string sub_category_name
+        string event_date
+        string event_time
+        string location
     }
 ```
 
@@ -153,10 +222,10 @@ classDiagram
         +String coverImageUrl
         +BlogStatus status
         +Integer viewsCount
+        +String subCategoryName
         +User author
         +Category category
         +Set~Tag~ tags
-        +List~Comment~ comments
     }
 
     class Category {
@@ -164,6 +233,15 @@ classDiagram
         +String name
         +String slug
         +String description
+        +List~SubCategory~ subCategories
+    }
+
+    class SubCategory {
+        +Long id
+        +String name
+        +String slug
+        +String description
+        +Category category
     }
 
     class Tag {
@@ -192,6 +270,29 @@ classDiagram
         +User user
     }
 
+    class News {
+        +Long id
+        +String title
+        +String slug
+        +String summary
+        +String content
+        +String categoryName
+        +String subCategoryName
+        +Boolean isBreaking
+        +Boolean isTrending
+        +Boolean isTopStory
+    }
+
+    class Event {
+        +Long id
+        +String title
+        +String description
+        +String categoryName
+        +String subCategoryName
+        +String eventDate
+        +String location
+    }
+
     class Role {
         <<enumeration>>
         ROLE_USER
@@ -210,6 +311,7 @@ classDiagram
     User "1" -- "*" Comment : posts
     User "1" -- "*" Like : gives
     User "1" -- "*" Bookmark : saves
+    Category "1" -- "*" SubCategory : contains
     Category "1" -- "*" Blog : categorizes
     Blog "*" -- "*" Tag : tagged with
     Blog "1" -- "*" Comment : contains

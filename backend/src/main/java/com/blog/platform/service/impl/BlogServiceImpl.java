@@ -93,6 +93,9 @@ public class BlogServiceImpl implements BlogService {
         blog.setStatus(request.getStatus() != null ? request.getStatus() : BlogStatus.DRAFT);
         blog.setAuthor(author);
         blog.setCategory(category);
+        if (request.getSubCategoryName() != null) {
+            blog.setSubCategoryName(request.getSubCategoryName());
+        }
 
         if (request.getTagNames() != null && !request.getTagNames().isEmpty()) {
             Set<Tag> tags = new HashSet<>();
@@ -133,6 +136,7 @@ public class BlogServiceImpl implements BlogService {
         if (request.getContent() != null) blog.setContent(request.getContent());
         if (request.getCoverImageUrl() != null) blog.setCoverImageUrl(request.getCoverImageUrl());
         if (request.getStatus() != null) blog.setStatus(request.getStatus());
+        if (request.getSubCategoryName() != null) blog.setSubCategoryName(request.getSubCategoryName());
 
         if (request.getCategoryId() != null) {
             Category category = categoryRepository.findById(request.getCategoryId())
@@ -179,12 +183,18 @@ public class BlogServiceImpl implements BlogService {
     public List<BlogResponse> getBlogsByAuthor(String username) {
         User author = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found: " + username));
-        return blogRepository.findByAuthorId(author.getId()).stream().map(this::mapToBlogResponse).collect(Collectors.toList());
+        return blogRepository.findByAuthorUsernameOrderByCreatedAtDesc(username).stream().map(this::mapToBlogResponse).collect(Collectors.toList());
     }
 
     @Override
     public Page<BlogResponse> getBlogsByCategory(String categorySlug, Pageable pageable) {
         return blogRepository.findByCategorySlugAndStatus(categorySlug, BlogStatus.PUBLISHED, pageable).map(this::mapToBlogResponse);
+    }
+
+    @Override
+    public List<BlogResponse> getBlogsByCategoryAndSubCategory(String categorySlug, String subCategorySlug) {
+        return blogRepository.findByCategoryAndSubCategory(categorySlug, subCategorySlug, BlogStatus.PUBLISHED)
+                .stream().map(this::mapToBlogResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -217,6 +227,7 @@ public class BlogServiceImpl implements BlogService {
                 author.getRole(), author.getEnabled(), author.getCreatedAt()
         ));
         res.setCategory(blog.getCategory());
+        res.setSubCategoryName(blog.getSubCategoryName());
         res.setTags(blog.getTags());
         res.setCreatedAt(blog.getCreatedAt());
         res.setUpdatedAt(blog.getUpdatedAt());

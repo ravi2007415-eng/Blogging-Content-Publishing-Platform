@@ -13,6 +13,7 @@ classDiagram
         +Role role
         +Boolean enabled
         +LocalDateTime createdAt
+        +LocalDateTime updatedAt
     }
 
     class Blog {
@@ -24,10 +25,12 @@ classDiagram
         +String coverImageUrl
         +BlogStatus status
         +Integer viewsCount
+        +String subCategoryName
         +User author
         +Category category
         +Set~Tag~ tags
-        +List~Comment~ comments
+        +LocalDateTime createdAt
+        +LocalDateTime updatedAt
     }
 
     class Category {
@@ -35,12 +38,29 @@ classDiagram
         +String name
         +String slug
         +String description
+        +List~SubCategory~ subCategories
+        +LocalDateTime createdAt
+    }
+
+    class SubCategory {
+        +Long id
+        +String name
+        +String slug
+        +String description
+        +Category category
+        +LocalDateTime createdAt
     }
 
     class Tag {
         +Long id
         +String name
         +String slug
+    }
+
+    class BlogTag {
+        +BlogTagId id
+        +Blog blog
+        +Tag tag
     }
 
     class Comment {
@@ -55,12 +75,48 @@ classDiagram
         +Long id
         +Blog blog
         +User user
+        +LocalDateTime createdAt
     }
 
     class Bookmark {
         +Long id
         +Blog blog
         +User user
+        +LocalDateTime createdAt
+    }
+
+    class News {
+        +Long id
+        +String title
+        +String slug
+        +String summary
+        +String content
+        +String categoryName
+        +String subCategoryName
+        +String imageUrl
+        +Boolean isBreaking
+        +Boolean isTrending
+        +Boolean isTopStory
+        +String authorName
+        +Integer viewsCount
+        +LocalDateTime publishedAt
+        +LocalDateTime createdAt
+    }
+
+    class Event {
+        +Long id
+        +String title
+        +String description
+        +String categoryName
+        +String subCategoryName
+        +String eventDate
+        +String eventTime
+        +String location
+        +String registrationUrl
+        +String status
+        +String organizer
+        +String coverImageUrl
+        +LocalDateTime createdAt
     }
 
     class Role {
@@ -81,6 +137,7 @@ classDiagram
     User "1" -- "*" Comment : posts
     User "1" -- "*" Like : gives
     User "1" -- "*" Bookmark : saves
+    Category "1" -- "*" SubCategory : contains
     Category "1" -- "*" Blog : categorizes
     Blog "*" -- "*" Tag : tagged with
     Blog "1" -- "*" Comment : contains

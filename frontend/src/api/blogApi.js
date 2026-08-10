@@ -34,7 +34,11 @@ export const blogApi = {
     return res.data;
   },
   filterByCategory: async (slug, page = 0) => {
-    const res = await axiosInstance.get(`/search/category/${slug}?page=${page}`);
+    const res = await axiosInstance.get(`/blogs/category/${slug}?page=${page}`);
+    return res.data;
+  },
+  getBlogsByCategoryAndSubCategory: async (categorySlug, subCategorySlug) => {
+    const res = await axiosInstance.get(`/blogs/category/${categorySlug}/${subCategorySlug}`);
     return res.data;
   },
   filterByTag: async (slug, page = 0) => {
@@ -46,3 +50,4 @@ export const blogApi = {
     return res.data;
   },
 };
+

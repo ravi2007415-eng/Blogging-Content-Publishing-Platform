@@ -22,6 +22,15 @@ Table categories {
   created_at timestamp [default: `now()`]
 }
 
+Table sub_categories {
+  id bigint [pk, increment]
+  name varchar(80) [not null]
+  slug varchar(100) [not null]
+  description varchar(255)
+  category_id bigint [not null, ref: > categories.id]
+  created_at timestamp [default: `now()`]
+}
+
 Table blogs {
   id bigint [pk, increment]
   title varchar(255) [not null]
@@ -31,6 +40,7 @@ Table blogs {
   cover_image_url varchar(500)
   status varchar(20) [not null, default: 'DRAFT']
   views_count int [default: 0]
+  sub_category_name varchar(80)
   author_id bigint [not null, ref: > users.id]
   category_id bigint [not null, ref: > categories.id]
   created_at timestamp [default: `now()`]
@@ -80,4 +90,38 @@ Table bookmarks {
   Indexes {
     (blog_id, user_id) [unique]
   }
+}
+
+Table news {
+  id bigint [pk, increment]
+  title varchar(255) [not null]
+  slug varchar(280) [not null, unique]
+  summary text
+  content longtext [not null]
+  category_name varchar(80) [not null]
+  sub_category_name varchar(80)
+  image_url varchar(500)
+  is_breaking boolean [default: false]
+  is_trending boolean [default: false]
+  is_top_story boolean [default: false]
+  author_name varchar(100)
+  views_count int [default: 0]
+  published_at timestamp [default: `now()`]
+  created_at timestamp [default: `now()`]
+}
+
+Table events {
+  id bigint [pk, increment]
+  title varchar(255) [not null]
+  description text
+  category_name varchar(80) [not null]
+  sub_category_name varchar(80) [not null]
+  event_date varchar(50) [not null]
+  event_time varchar(50)
+  location varchar(255) [not null]
+  registration_url varchar(500)
+  status varchar(30) [default: 'UPCOMING']
+  organizer varchar(100)
+  cover_image_url varchar(500)
+  created_at timestamp [default: `now()`]
 }

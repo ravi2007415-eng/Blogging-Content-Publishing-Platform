@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { WpAdminBar } from './components/WpAdminBar';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ToastNotification } from './components/ToastNotification';
@@ -23,6 +24,7 @@ export default function App() {
 
   return (
     <div className="app-layout">
+      <WpAdminBar />
       <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <ToastNotification />
       <main className="main-content">

@@ -20,6 +20,8 @@ public class BlogRequest {
     @NotNull(message = "Category ID is required")
     private Long categoryId;
 
+    private String subCategoryName;
+
     private Set<String> tagNames;
 
     private BlogStatus status = BlogStatus.DRAFT;
@@ -41,9 +43,13 @@ public class BlogRequest {
     public Long getCategoryId() { return categoryId; }
     public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
 
+    public String getSubCategoryName() { return subCategoryName; }
+    public void setSubCategoryName(String subCategoryName) { this.subCategoryName = subCategoryName; }
+
     public Set<String> getTagNames() { return tagNames; }
     public void setTagNames(Set<String> tagNames) { this.tagNames = tagNames; }
 
     public BlogStatus getStatus() { return status; }
     public void setStatus(BlogStatus status) { this.status = status; }
 }
+

@@ -6,9 +6,8 @@ import { CategoryContext } from '../context/CategoryContext';
 import { NotificationContext } from '../context/NotificationContext';
 import { 
   Sun, Moon, Search, PenSquare, Bookmark, User, LogOut, Layers, Home, 
-  Calendar, Bell, Shield, ChevronDown, CheckCheck, Sparkles, Newspaper 
+  Calendar, Bell, Shield, ChevronDown, CheckCheck, Sparkles, Newspaper, Compass, Globe 
 } from 'lucide-react';
-import { SpeedMonogram } from './SpeedMonogram';
 
 export const Navbar = ({ searchQuery, setSearchQuery }) => {
   const { user, isAuthenticated, logout } = useContext(AuthContext);
@@ -32,23 +31,26 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
   const isAdmin = user?.role === 'ROLE_ADMIN' || user?.email?.includes('admin');
 
   return (
-    <nav className="glass-panel sticky-nav">
+    <nav className="wp-navbar sticky-nav">
       <div className="nav-container">
-        {/* Brand Logo */}
-        <Link to="/" className="brand-logo">
-          <div className="logo-icon speed-logo-wrapper">
-            <SpeedMonogram size={28} />
+        {/* Brand Logo - WordPress.com Style */}
+        <Link to="/" className="brand-logo wp-brand">
+          <div className="wp-logo-icon">
+            <span className="wp-mark">W</span>
           </div>
-          <span className="logo-text">Keryx<span className="logo-dot">.</span></span>
+          <div className="wp-logo-text">
+            <span className="wp-main-name">WordPress</span>
+            <span className="wp-sub-name">.com</span>
+          </div>
         </Link>
 
         {/* Global Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="search-form">
-          <Search className="search-icon" size={18} />
+        <form onSubmit={handleSearchSubmit} className="search-form wp-search-form">
+          <Search className="search-icon" size={17} />
           <input
             type="text"
             className="input-field search-input"
-            placeholder="Search updates, sub-categories, sports, events..."
+            placeholder="Search WordPress blogs, topics, articles..."
             value={searchQuery || ''}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -57,16 +59,21 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
         {/* Navigation Links */}
         <div className="nav-actions">
           <Link to="/" className="nav-link">
-            <Home size={18} />
-            <span>Home</span>
+            <Home size={17} />
+            <span>Discover</span>
+          </Link>
+
+          <Link to="/explore" className="nav-link">
+            <Compass size={17} />
+            <span>Reader</span>
           </Link>
 
           <Link to="/news" className="nav-link">
-            <Newspaper size={18} />
+            <Newspaper size={17} />
             <span>News</span>
           </Link>
 
-          {/* Dynamic Category & Sub-Category Dropdown */}
+          {/* Dynamic Category Dropdown */}
           <div className="nav-dropdown-container">
             <button
               className="nav-link cat-dropdown-btn"
@@ -76,16 +83,16 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
                 setUserDropdownOpen(false);
               }}
             >
-              <Layers size={18} />
-              <span>Categories</span>
+              <Layers size={17} />
+              <span>Topics</span>
               <ChevronDown size={14} className={`chevron-icon ${catDropdownOpen ? 'rotate' : ''}`} />
             </button>
 
             {catDropdownOpen && (
-              <div className="cat-dropdown-menu glass-panel shadow-2xl">
+              <div className="cat-dropdown-menu wp-dropdown-panel shadow-2xl">
                 <div className="cat-dropdown-header">
-                  <span>Central Content Taxonomy</span>
-                  <Link to="/explore" onClick={() => setCatDropdownOpen(false)} className="text-pink hover:underline text-xs">
+                  <span>Explore WordPress Topics</span>
+                  <Link to="/explore" onClick={() => setCatDropdownOpen(false)} className="text-wp-blue hover:underline text-xs">
                     View All
                   </Link>
                 </div>
@@ -118,13 +125,12 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
             )}
           </div>
 
-          {/* Upcoming Events Hub Link */}
           <Link to="/events" className="nav-link">
-            <Calendar size={18} />
+            <Calendar size={17} />
             <span>Events</span>
           </Link>
 
-          {/* Real-time Notifications Bell Drawer */}
+          {/* Notifications Drawer */}
           <div className="nav-dropdown-container">
             <button
               className="nav-link icon-only relative"
@@ -135,18 +141,18 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
                 setUserDropdownOpen(false);
               }}
             >
-              <Bell size={19} />
+              <Bell size={18} />
               {unreadCount > 0 && (
                 <span className="notif-badge">{unreadCount}</span>
               )}
             </button>
 
             {notifDrawerOpen && (
-              <div className="notif-drawer glass-panel shadow-2xl">
+              <div className="notif-drawer wp-dropdown-panel shadow-2xl">
                 <div className="notif-drawer-header">
                   <div className="notif-header-title">
-                    <Sparkles size={16} className="text-cyan" />
-                    <h4>Live Updates Feed</h4>
+                    <Sparkles size={16} className="text-wp-blue" />
+                    <h4>WordPress Notifications</h4>
                   </div>
                   {unreadCount > 0 && (
                     <button onClick={markAllRead} className="btn-text text-xs flex items-center gap-1">
@@ -157,7 +163,7 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
 
                 <div className="notif-list">
                   {notifications.length === 0 ? (
-                    <p className="notif-empty">No updates yet.</p>
+                    <p className="notif-empty">No new notifications.</p>
                   ) : (
                     notifications.map((n) => (
                       <Link
@@ -180,16 +186,16 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
             )}
           </div>
 
-          {/* Theme Toggle Button */}
+          {/* Mode Switcher */}
           <button
             onClick={toggleTheme}
             className="btn btn-secondary icon-toggle"
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
-            {theme === 'dark' ? <Sun size={18} className="text-yellow" /> : <Moon size={18} />}
+            {theme === 'dark' ? <Sun size={17} className="text-yellow" /> : <Moon size={17} />}
           </button>
 
-          {/* User Auth & Role Dashboards */}
+          {/* Auth Action Buttons */}
           {isAuthenticated ? (
             <div className="user-dropdown-container">
               <button
@@ -208,23 +214,22 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
               </button>
 
               {userDropdownOpen && (
-                <div className="dropdown-menu glass-panel shadow-2xl">
+                <div className="dropdown-menu wp-dropdown-panel shadow-2xl">
                   <div className="dropdown-header">
-                    <p className="user-name">{user?.name || 'Creator'}</p>
-                    <p className="user-email">{user?.email || 'user@keryx.dev'}</p>
+                    <p className="user-name">{user?.name || 'WordPress Creator'}</p>
+                    <p className="user-email">{user?.email || 'creator@wordpress.com'}</p>
                     <span className="badge badge-primary text-xs mt-1">{user?.role || 'ROLE_AUTHOR'}</span>
                   </div>
                   <hr className="dropdown-divider" />
 
-                  {/* Role Specific Dashboards */}
                   {isAdmin && (
                     <Link
                       to="/admin"
-                      className="dropdown-item text-pink font-semibold"
+                      className="dropdown-item text-wp-blue font-semibold"
                       onClick={() => setUserDropdownOpen(false)}
                     >
                       <Shield size={16} />
-                      <span>Admin Command Center</span>
+                      <span>WP Admin Dashboard</span>
                     </Link>
                   )}
 
@@ -234,7 +239,7 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
                     onClick={() => setUserDropdownOpen(false)}
                   >
                     <PenSquare size={16} />
-                    <span>Author Studio</span>
+                    <span>Site Studio & Posts</span>
                   </Link>
 
                   <Link
@@ -243,7 +248,7 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
                     onClick={() => setUserDropdownOpen(false)}
                   >
                     <User size={16} />
-                    <span>User Dashboard</span>
+                    <span>My Account</span>
                   </Link>
 
                   <Link
@@ -252,7 +257,7 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
                     onClick={() => setUserDropdownOpen(false)}
                   >
                     <Bookmark size={16} />
-                    <span>Bookmarks</span>
+                    <span>Saved Articles</span>
                   </Link>
 
                   <hr className="dropdown-divider" />
@@ -266,17 +271,17 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
                     className="dropdown-item logout-btn"
                   >
                     <LogOut size={16} />
-                    <span>Sign Out</span>
+                    <span>Log Out</span>
                   </button>
                 </div>
               )}
             </div>
           ) : (
             <div className="auth-btns">
-              <Link to="/login" className="btn btn-secondary">
-                Sign In
+              <Link to="/login" className="btn btn-wp-outline">
+                Log In
               </Link>
-              <Link to="/register" className="btn btn-primary">
+              <Link to="/register" className="btn btn-wp-primary">
                 Get Started
               </Link>
             </div>

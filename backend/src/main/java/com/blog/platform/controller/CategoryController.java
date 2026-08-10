@@ -54,4 +54,22 @@ public class CategoryController {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{categoryId}/subcategories")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<com.blog.platform.model.entity.SubCategory> createSubCategory(
+            @PathVariable Long categoryId,
+            @RequestBody java.util.Map<String, String> payload) {
+        String name = payload.get("name");
+        String description = payload.getOrDefault("description", "");
+        return new ResponseEntity<>(categoryService.createSubCategory(categoryId, name, description), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/subcategories/{subCategoryId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteSubCategory(@PathVariable Long subCategoryId) {
+        categoryService.deleteSubCategory(subCategoryId);
+        return ResponseEntity.noContent().build();
+    }
 }
+

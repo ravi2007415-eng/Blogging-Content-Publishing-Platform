@@ -48,6 +48,22 @@ public class BlogController {
         return ResponseEntity.ok(blogService.getBlogBySlug(slug));
     }
 
+    @GetMapping("/category/{categorySlug}")
+    public ResponseEntity<Page<BlogResponse>> getBlogsByCategory(
+            @PathVariable String categorySlug,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return ResponseEntity.ok(blogService.getBlogsByCategory(categorySlug, pageable));
+    }
+
+    @GetMapping("/category/{categorySlug}/{subCategorySlug}")
+    public ResponseEntity<List<BlogResponse>> getBlogsByCategoryAndSubCategory(
+            @PathVariable String categorySlug,
+            @PathVariable String subCategorySlug) {
+        return ResponseEntity.ok(blogService.getBlogsByCategoryAndSubCategory(categorySlug, subCategorySlug));
+    }
+
     @PostMapping
     @PreAuthorize("hasAnyRole('AUTHOR', 'ADMIN')")
     public ResponseEntity<BlogResponse> createBlog(@Valid @RequestBody BlogRequest request, Authentication authentication) {
@@ -73,3 +89,4 @@ public class BlogController {
         return ResponseEntity.ok(blogService.getBlogsByAuthor(authentication.getName()));
     }
 }
+

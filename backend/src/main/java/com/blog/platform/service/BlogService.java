@@ -16,6 +16,8 @@ public interface BlogService {
     void deleteBlog(Long id, String currentUsername);
     List<BlogResponse> getBlogsByAuthor(String username);
     Page<BlogResponse> getBlogsByCategory(String categorySlug, Pageable pageable);
+    List<BlogResponse> getBlogsByCategoryAndSubCategory(String categorySlug, String subCategorySlug);
     Page<BlogResponse> getBlogsByTag(String tagSlug, Pageable pageable);
     Page<BlogResponse> searchBlogs(String query, Pageable pageable);
 }
+

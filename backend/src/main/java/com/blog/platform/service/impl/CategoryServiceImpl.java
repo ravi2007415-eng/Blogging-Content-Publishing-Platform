@@ -4,7 +4,9 @@ import com.blog.platform.dto.CategoryRequest;
 import com.blog.platform.exception.DuplicateResourceException;
 import com.blog.platform.exception.ResourceNotFoundException;
 import com.blog.platform.model.entity.Category;
+import com.blog.platform.model.entity.SubCategory;
 import com.blog.platform.repository.CategoryRepository;
+import com.blog.platform.repository.SubCategoryRepository;
 import com.blog.platform.service.CategoryService;
 import com.blog.platform.util.ValidationUtil;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,12 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
     private final ValidationUtil validationUtil;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, ValidationUtil validationUtil) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, SubCategoryRepository subCategoryRepository, ValidationUtil validationUtil) {
         this.categoryRepository = categoryRepository;
+        this.subCategoryRepository = subCategoryRepository;
         this.validationUtil = validationUtil;
     }
 
@@ -69,4 +73,21 @@ public class CategoryServiceImpl implements CategoryService {
         }
         categoryRepository.deleteById(id);
     }
+
+    @Override
+    public SubCategory createSubCategory(Long categoryId, String name, String description) {
+        Category parent = getCategoryById(categoryId);
+        String slug = validationUtil.toSlug(name);
+        SubCategory subCategory = new SubCategory(null, name, slug, description, parent);
+        return subCategoryRepository.save(subCategory);
+    }
+
+    @Override
+    public void deleteSubCategory(Long subCategoryId) {
+        if (!subCategoryRepository.existsById(subCategoryId)) {
+            throw new ResourceNotFoundException("SubCategory not found with ID: " + subCategoryId);
+        }
+        subCategoryRepository.deleteById(subCategoryId);
+    }
 }
+
