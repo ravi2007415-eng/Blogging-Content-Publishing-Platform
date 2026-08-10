@@ -269,7 +269,7 @@ export const LoginPage = () => {
             <SpeedMonogram size={28} />
           </div>
           <h2>Welcome Back</h2>
-          <p className="text-muted">Sign in to your Keryx WordPress portal</p>
+          <p className="text-muted">Sign in to your Keryx portal</p>
         </div>
 
         {/* Demo Account Selector */}

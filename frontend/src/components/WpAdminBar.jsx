@@ -1,17 +1,16 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { NotificationContext } from '../context/NotificationContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { 
-  Plus, Compass, LayoutDashboard, Shield, Bell, LogOut, Sun, Moon, Sparkles, User, Bookmark, PenSquare 
+  Plus, Compass, LayoutDashboard, Shield, Bell, Sun, Moon 
 } from 'lucide-react';
 
 export const WpAdminBar = () => {
-  const { user, isAuthenticated, logout } = useContext(AuthContext);
+  const { user, isAuthenticated } = useContext(AuthContext);
   const { unreadCount } = useContext(NotificationContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const navigate = useNavigate();
 
   if (!isAuthenticated) return null;
 
@@ -20,11 +19,11 @@ export const WpAdminBar = () => {
   return (
     <div className="wp-admin-bar">
       <div className="wp-admin-bar-container">
-        {/* Left Side: WP Logo, My Site, Write */}
+        {/* Left Side: Keryx Logo, My Site, Write */}
         <div className="wp-admin-left">
-          <Link to="/" className="wp-admin-brand" title="WordPress Home">
-            <span className="wp-logo-circle">W</span>
-            <span className="wp-brand-text">WordPress</span>
+          <Link to="/" className="wp-admin-brand" title="Keryx Home">
+            <span className="wp-logo-circle">K</span>
+            <span className="wp-brand-text">Keryx</span>
           </Link>
 
           <div className="wp-admin-item-wrapper">
@@ -54,7 +53,7 @@ export const WpAdminBar = () => {
           {isAdmin && (
             <Link to="/admin" className="wp-admin-item wp-admin-badge-admin">
               <Shield size={14} />
-              <span>WP Admin</span>
+              <span>Keryx Admin</span>
             </Link>
           )}
 

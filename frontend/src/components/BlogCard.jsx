@@ -50,7 +50,7 @@ export const BlogCard = ({ blog, onToggleLike, onToggleBookmark, viewMode = 'gri
             className="author-avatar"
           />
           <div className="author-info">
-            <span className="author-name">{blog.author?.fullName || blog.author?.username || 'WordPress Creator'}</span>
+            <span className="author-name">{blog.author?.fullName || blog.author?.username || 'Keryx Creator'}</span>
             <span className="post-date">{formatDate(blog.createdAt)}</span>
           </div>
           <span className="read-time-pill">

@@ -79,7 +79,7 @@ export const HomePage = ({ searchQuery }) => {
         <section className="wp-hero-section">
           <div className="wp-hero-badge">
             <Sparkles size={15} className="text-wp-blue" />
-            <span>Welcome to WordPress.com</span>
+            <span>Welcome to Keryx</span>
           </div>
 
           <h1 className="wp-hero-title">
@@ -87,7 +87,7 @@ export const HomePage = ({ searchQuery }) => {
           </h1>
 
           <p className="wp-hero-subtitle">
-            Join millions of writers, news outlets, and creators using WordPress to publish their finest work with complete creative control and enterprise speed.
+            Join millions of writers, news outlets, and creators using Keryx to publish their finest work with complete creative control and enterprise speed.
           </p>
 
           <form onSubmit={handleDomainSubmit} className="wp-hero-search-box">
@@ -249,7 +249,7 @@ export const HomePage = ({ searchQuery }) => {
                   alt={featuredBlog.author?.fullName || 'Author'} 
                   className="wp-author-avatar"
                 />
-                <span>By <strong>{featuredBlog.author?.fullName || featuredBlog.author?.username || 'WordPress Team'}</strong></span>
+                <span>By <strong>{featuredBlog.author?.fullName || featuredBlog.author?.username || 'Keryx Team'}</strong></span>
               </div>
               <Link to={`/blog/${featuredBlog.slug}`} className="btn btn-wp-primary text-xs">
                 Read Full Story <ArrowRight size={14} />
@@ -297,7 +297,7 @@ export const HomePage = ({ searchQuery }) => {
             <h2 className="wp-feed-title">
               {urlQuery ? `Search Results for "${urlQuery}"` :
                selectedCategory ? `${currentCategoryObj?.name || selectedCategory}${selectedSubCategory ? ` → ${selectedSubCategory}` : ''}` :
-               'Latest WordPress Stories'}
+               'Latest Keryx Stories'}
             </h2>
             <p className="wp-feed-subtitle">{blogs.length} published articles</p>
           </div>
@@ -324,7 +324,7 @@ export const HomePage = ({ searchQuery }) => {
         {loading ? (
           <div className="wp-loading-state">
             <div className="wp-spinner"></div>
-            <span>Loading stories from WordPress backend...</span>
+            <span>Loading stories from Keryx backend...</span>
           </div>
         ) : blogs.length > 0 ? (
           <div className={viewMode === 'grid' ? 'wp-grid-layout' : 'wp-list-layout'}>
@@ -348,7 +348,7 @@ export const HomePage = ({ searchQuery }) => {
       {!selectedCategory && !urlQuery && (
         <section className="wp-category-directory">
           <h3 className="wp-directory-header">
-            Explore WordPress Content Taxonomy
+            Explore Keryx Content Taxonomy
           </h3>
           <div className="wp-directory-grid">
             {categories.map(cat => (

@@ -43,9 +43,9 @@ export const ExplorePage = () => {
             <Compass size={24} className="text-wp-blue" />
           </div>
           <div>
-            <h1 className="wp-reader-title">WordPress Reader</h1>
+            <h1 className="wp-reader-title">Keryx Reader</h1>
             <p className="wp-reader-subtitle">
-              Discover posts from across the WordPress universe, follow your favorite authors, and save articles to read later.
+              Discover posts from across the Keryx network, follow your favorite authors, and save articles to read later.
             </p>
           </div>
         </div>

@@ -6,7 +6,7 @@ import { CategoryContext } from '../context/CategoryContext';
 import { NotificationContext } from '../context/NotificationContext';
 import { 
   Sun, Moon, Search, PenSquare, Bookmark, User, LogOut, Layers, Home, 
-  Calendar, Bell, Shield, ChevronDown, CheckCheck, Sparkles, Newspaper, Compass, Globe 
+  Calendar, Bell, Shield, ChevronDown, CheckCheck, Sparkles, Newspaper, Compass
 } from 'lucide-react';
 
 export const Navbar = ({ searchQuery, setSearchQuery }) => {
@@ -33,14 +33,14 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
   return (
     <nav className="wp-navbar sticky-nav">
       <div className="nav-container">
-        {/* Brand Logo - WordPress.com Style */}
+        {/* Brand Logo - Keryx */}
         <Link to="/" className="brand-logo wp-brand">
           <div className="wp-logo-icon">
-            <span className="wp-mark">W</span>
+            <span className="wp-mark">K</span>
           </div>
           <div className="wp-logo-text">
-            <span className="wp-main-name">WordPress</span>
-            <span className="wp-sub-name">.com</span>
+            <span className="wp-main-name">Keryx</span>
+            <span className="wp-sub-name">.dev</span>
           </div>
         </Link>
 
@@ -50,7 +50,7 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
           <input
             type="text"
             className="input-field search-input"
-            placeholder="Search WordPress blogs, topics, articles..."
+            placeholder="Search Keryx blogs, topics, articles..."
             value={searchQuery || ''}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -91,7 +91,7 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
             {catDropdownOpen && (
               <div className="cat-dropdown-menu wp-dropdown-panel shadow-2xl">
                 <div className="cat-dropdown-header">
-                  <span>Explore WordPress Topics</span>
+                  <span>Explore Keryx Topics</span>
                   <Link to="/explore" onClick={() => setCatDropdownOpen(false)} className="text-wp-blue hover:underline text-xs">
                     View All
                   </Link>
@@ -152,7 +152,7 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
                 <div className="notif-drawer-header">
                   <div className="notif-header-title">
                     <Sparkles size={16} className="text-wp-blue" />
-                    <h4>WordPress Notifications</h4>
+                    <h4>Keryx Notifications</h4>
                   </div>
                   {unreadCount > 0 && (
                     <button onClick={markAllRead} className="btn-text text-xs flex items-center gap-1">
@@ -216,8 +216,8 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
               {userDropdownOpen && (
                 <div className="dropdown-menu wp-dropdown-panel shadow-2xl">
                   <div className="dropdown-header">
-                    <p className="user-name">{user?.name || 'WordPress Creator'}</p>
-                    <p className="user-email">{user?.email || 'creator@wordpress.com'}</p>
+                    <p className="user-name">{user?.name || 'Keryx Creator'}</p>
+                    <p className="user-email">{user?.email || 'creator@keryx.dev'}</p>
                     <span className="badge badge-primary text-xs mt-1">{user?.role || 'ROLE_AUTHOR'}</span>
                   </div>
                   <hr className="dropdown-divider" />
@@ -229,7 +229,7 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
                       onClick={() => setUserDropdownOpen(false)}
                     >
                       <Shield size={16} />
-                      <span>WP Admin Dashboard</span>
+                      <span>Keryx Admin Dashboard</span>
                     </Link>
                   )}
 
