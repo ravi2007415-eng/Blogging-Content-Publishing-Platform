@@ -1,33 +1,113 @@
-# Problem Statement: Modern Content Publishing Platform
+# Blogging & Content Publishing Platform
 
-## Context
-In today's digital landscape, content creators and readers need a seamless, performant, and intuitive platform to publish, discover, and engage with articles and blogs. Legacy platforms often suffer from cluttered user interfaces, rigid permission systems, inefficient search capabilities, and lack of real-time administrative oversight.
+## 1. Project Title
 
-## Objective
-The objective of this project is to design and develop a scalable, secure, full-stack **Blogging and Content Publishing Platform** that connects authors, readers, and administrators in a single cohesive ecosystem.
+Blogging & Content Publishing Platform
 
-## Key Requirements
+## 2. Domain
 
-### 1. User & Access Management
-- Multi-role authorization: **User**, **Author**, and **Admin**.
-- Secure registration, authentication (JWT), and profile management.
-- Author application and privilege assignment by Admins.
+Content Management System (CMS) / Social Media / Publishing
 
-### 2. Content Creation & Management
-- Authors can write, draft, preview, edit, and publish blogs.
-- Support for rich text formatting, cover images, categories, and tags.
-- Post status tracking: `DRAFT`, `PUBLISHED`, `ARCHIVED`.
+## 3. Users and Roles
 
-### 3. Reader Engagement
-- Full-text search and filtering by category, tag, author, or keyword.
-- Social interaction features: Likes, Comments, and Bookmarks.
-- User feed with trending and recent articles.
+### Admin
+- Manage users and content
+- Approve or remove inappropriate blogs and comments
+- Monitor platform activity
 
-### 4. Admin & Analytical Oversight
-- Comprehensive dashboard for monitoring platform analytics (total users, posts, engagement metrics).
-- Moderation controls to manage users, suspend accounts, approve or delete published posts.
+### Author
+- Create, edit, delete and publish blog posts
+- Upload featured images
+- Respond to comments
 
-### 5. Architectural Quality Attributes
-- **Performance**: Sub-100ms API response times for read operations.
-- **Security**: Password hashing (BCrypt), stateless JWT tokens, CORS enforcement, and SQL injection prevention via JPA.
-- **Maintainability**: Clean layered architecture (Controller -> Service -> Repository -> Entity) in Spring Boot and modular React component structure.
+### Reader
+- Read published blogs
+- Search articles by title, category or tags
+- Like, comment and bookmark blogs
+
+## 4. Problem Statement
+
+Many existing blogging platforms are either too complex or
+require paid subscriptions for advanced features.
+
+New writers need a simple platform to publish articles,
+organize content and interact with readers.
+
+Readers also need an efficient way to search blogs based on
+categories, tags or keywords.
+
+This project aims to provide an easy-to-use content publishing
+system with search, user engagement and secure content management.
+
+## 5. Proposed Solution
+
+The Blogging & Content Publishing Platform will provide:
+
+- User registration and login
+- JWT authentication
+- Role-based access
+- Blog creation and editing
+- Draft and publish options
+- Category and tag management
+- Search by title, category, tag and keywords
+- Comments
+- Likes
+- Bookmarks
+- User profile management
+- Author dashboard
+- Admin content moderation
+- Responsive web interface
+
+## 6. Core Entities / Database Tables
+
+- Users
+- Blogs
+- Categories
+- Tags
+- BlogTags
+- Comments
+- Likes
+- Bookmarks
+
+## 7. Success Criteria
+
+- User can register and log in successfully.
+- Author can create and publish a blog.
+- Reader can search and read published blogs.
+- Users can comment, like and bookmark blogs.
+- Admin can moderate content efficiently.
+- The system uses a structured relational database.
+- The application provides secure role-based access.
+
+## 8. Out of Scope
+
+- Video blogging
+- Live streaming
+- Real-time chat
+- Multi-language translation
+- Payment integration
+- Mobile application
+
+## 9. Technology Track
+
+### Frontend
+- React.js
+- Vite
+
+### Backend
+- Java 17
+- Spring Boot 3
+- Spring Security
+- JWT
+- Spring Data JPA
+
+### Database
+- MySQL 8
+
+### Tools
+- Maven
+- Git
+- GitHub
+- Postman / Thunder Client
+- Swagger / OpenAPI
+- VS Code
