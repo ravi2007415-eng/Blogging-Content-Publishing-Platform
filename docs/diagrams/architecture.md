@@ -1,6 +1,16 @@
 # Architecture Diagram
 
 ```mermaid
+%%{init: {
+  'theme': 'neutral',
+  'look': 'handDrawn',
+  'themeVariables': {
+    'fontFamily': 'Architects Daughter, Caveat, Comic Sans MS, cursive',
+    'primaryColor': '#EEF2FF',
+    'primaryBorderColor': '#4F46E5',
+    'lineColor': '#334155'
+  }
+}}%%
 graph TD
     subgraph Client Tier
         UI["React SPA (Vite + Vanilla CSS)"]
@@ -59,3 +69,4 @@ graph TD
     BlogRepo --> DB
     CommentRepo --> DB
 ```
+

@@ -4,9 +4,21 @@ A modern, full-stack, enterprise-grade Blogging and Content Publishing Platform 
 
 ---
 
-## 🏗️ System Architecture Diagram
+## 🏗️ System Architecture Diagram (Hand-Drawn Style)
+
+> 🎨 **Hand-Drawn Architecture**: Styled with a human sketch aesthetic.
 
 ```mermaid
+%%{init: {
+  'theme': 'neutral',
+  'look': 'handDrawn',
+  'themeVariables': {
+    'fontFamily': 'Architects Daughter, Caveat, Comic Sans MS, cursive',
+    'primaryColor': '#EEF2FF',
+    'primaryBorderColor': '#4F46E5',
+    'lineColor': '#334155'
+  }
+}}%%
 graph TD
     subgraph Client Tier
         UI["React SPA (Vite + Vanilla CSS)"]
@@ -68,9 +80,23 @@ graph TD
 
 ---
 
-## 🗄️ Entity-Relationship (ER) Diagram
+## 🗄️ Entity-Relationship (ER) Diagram (Hand-Drawn Style)
+
+> 🎨 **Hand-Drawn ER Diagram**: View [docs/diagrams/er_diagram.svg](docs/diagrams/er_diagram.svg) or [docs/diagrams/er_diagram.md](docs/diagrams/er_diagram.md) for full document.
+
+![Entity-Relationship Diagram (Hand-Drawn)](docs/diagrams/er_diagram.svg)
 
 ```mermaid
+%%{init: {
+  'theme': 'neutral',
+  'look': 'handDrawn',
+  'themeVariables': {
+    'fontFamily': 'Architects Daughter, Caveat, Comic Sans MS, cursive',
+    'primaryColor': '#ECFDF5',
+    'primaryBorderColor': '#059669',
+    'lineColor': '#334155'
+  }
+}}%%
 erDiagram
     USERS ||--o{ BLOGS : "author of"
     USERS ||--o{ COMMENTS : "writes"
@@ -92,19 +118,25 @@ erDiagram
         string email UK
         string password
         string full_name
+        text bio
+        string avatar_url
         string role
+        boolean enabled
+        timestamp created_at
     }
 
     CATEGORIES {
         bigint id PK
         string name UK
         string slug UK
+        string description
     }
 
     BLOGS {
         bigint id PK
         string title
         string slug UK
+        string summary
         text content
         string status
         bigint author_id FK
@@ -117,19 +149,65 @@ erDiagram
         string slug UK
     }
 
+    BLOG_TAGS {
+        bigint blog_id PK,FK
+        bigint tag_id PK,FK
+    }
+
     COMMENTS {
         bigint id PK
         text content
         bigint blog_id FK
         bigint user_id FK
     }
+
+    LIKES {
+        bigint id PK
+        bigint blog_id FK
+        bigint user_id FK
+    }
+
+    BOOKMARKS {
+        bigint id PK
+        bigint blog_id FK
+        bigint user_id FK
+    }
+
+    NEWS {
+        bigint id PK
+        string title
+        string slug UK
+        string summary
+        string category_name
+    }
+
+    EVENTS {
+        bigint id PK
+        string title
+        string event_date
+        string location
+    }
 ```
 
 ---
 
-## 🏛️ Class Diagram
+## 🏛️ Class Diagram (Hand-Drawn Style)
+
+> 🎨 **Hand-Drawn Class Diagram**: View [docs/diagrams/class_diagram.svg](docs/diagrams/class_diagram.svg) or [docs/diagrams/class_diagram.md](docs/diagrams/class_diagram.md) for full document.
+
+![Class Diagram (Hand-Drawn)](docs/diagrams/class_diagram.svg)
 
 ```mermaid
+%%{init: {
+  'theme': 'neutral',
+  'look': 'handDrawn',
+  'themeVariables': {
+    'fontFamily': 'Architects Daughter, Caveat, Comic Sans MS, cursive',
+    'primaryColor': '#F0F9FF',
+    'primaryBorderColor': '#0284C7',
+    'lineColor': '#334155'
+  }
+}}%%
 classDiagram
     class User {
         +Long id
@@ -184,12 +262,31 @@ classDiagram
         +Long id
         +Blog blog
         +User user
+        +LocalDateTime createdAt
     }
 
     class Bookmark {
         +Long id
         +Blog blog
         +User user
+        +LocalDateTime createdAt
+    }
+
+    class News {
+        +Long id
+        +String title
+        +String slug
+        +String summary
+        +String categoryName
+        +Boolean isBreaking
+    }
+
+    class Event {
+        +Long id
+        +String title
+        +String eventDate
+        +String location
+        +String status
     }
 
     class Role {

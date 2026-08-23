@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1450 1100" width="1450" height="1100" style="background-color: #FAF8F5;">
+    <defs>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&amp;family=Caveat:wght@600;700&amp;display=swap');
+            text {
+                font-family: 'Architects Daughter', 'Caveat', 'Comic Sans MS', cursive, sans-serif;
+            }
+            .title-text {
+                font-size: 28px;
+                font-weight: bold;
+                fill: #1E293B;
+            }
+            .class-name {
+                font-size: 20px;
+                font-weight: bold;
+                fill: #0F172A;
+            }
+            .stereotype {
+                font-size: 13px;
+                font-style: italic;
+                fill: #475569;
+            }
+            .field-text {
+                font-size: 13.5px;
+                fill: #334155;
+            }
+            .badge-text {
+                font-size: 11px;
+                font-weight: bold;
+                fill: #FFFFFF;
+            }
+        </style>
+        <!-- Background Grid Pattern -->
+        <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+            <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#E5E0D8" stroke-width="0.8" stroke-opacity="0.6"/>
+        </pattern>
+        <!-- Arrowhead -->
+        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155" />
+        </marker>
+    </defs>
+
+    <!-- Background -->
+    <rect width="100%" height="100%" fill="#FAF8F5" />
+    <rect width="100%" height="100%" fill="url(#grid)" />
+
+    <!-- Title Banner -->
+    <g transform="translate(475, 25)">
+        <rect x="0" y="0" width="500" height="55" rx="12" fill="#FFFBEB" stroke="#D97706" stroke-width="2.2" stroke-dasharray="4 2"/>
+        <text x="250" y="36" text-anchor="middle" class="title-text" fill="#B45309">✏️ Domain Class Diagram (Hand-Drawn)</text>
+    </g>
+
+    <!-- Connectors -->
+    
+    <g class="sketch-connector">
+        <path d="M 260 230 Q 338.6749201053974 244.9413574775828 420 230" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-dasharray="none" />
+        <path d="M 261 229 Q 336.6749201053974 246.9413574775828 419 231" fill="none" stroke="#0284C7" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round" />
+        
+        <g transform="translate(340, 230)">
+            <rect x="-35" y="-12" width="70" height="22" rx="6" fill="#FFFDF7" stroke="#0284C7" stroke-width="1.2" stroke-opacity="0.7"/>
+            <text x="0" y="3" text-anchor="middle" font-family="'Architects Daughter', 'Caveat', 'Comic Sans MS', cursive" font-size="12" font-weight="bold" fill="#1E293B">writes (1..*)</text>
+        </g>
+    </g>
+    
+    <g class="sketch-connector">
+        <path d="M 700 230 Q 756.3268814752038 244.94119759426135 810 230" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-dasharray="none" />
+        <path d="M 701 229 Q 754.3268814752038 246.94119759426135 809 231" fill="none" stroke="#D97706" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round" />
+        
+        <g transform="translate(755, 230)">
+            <rect x="-35" y="-12" width="70" height="22" rx="6" fill="#FFFDF7" stroke="#D97706" stroke-width="1.2" stroke-opacity="0.7"/>
+            <text x="0" y="3" text-anchor="middle" font-family="'Architects Daughter', 'Caveat', 'Comic Sans MS', cursive" font-size="12" font-weight="bold" fill="#1E293B">categorizes (1..*)</text>
+        </g>
+    </g>
+    
+    <g class="sketch-connector">
+        <path d="M 640 430 Q 889.383479274539 325.7437664586038 1110 230" fill="none" stroke="#9333EA" stroke-width="2" stroke-linecap="round" stroke-dasharray="none" />
+        <path d="M 641 429 Q 887.383479274539 327.7437664586038 1109 231" fill="none" stroke="#9333EA" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round" />
+        
+        <g transform="translate(875, 330)">
+            <rect x="-35" y="-12" width="70" height="22" rx="6" fill="#FFFDF7" stroke="#9333EA" stroke-width="1.2" stroke-opacity="0.7"/>
+            <text x="0" y="3" text-anchor="middle" font-family="'Architects Daughter', 'Caveat', 'Comic Sans MS', cursive" font-size="12" font-weight="bold" fill="#1E293B">tagged with (*..*)</text>
+        </g>
+    </g>
+    
+    <g class="sketch-connector">
+        <path d="M 560 430 Q 404.1820251408258 486.1742570348637 260 570" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" stroke-dasharray="none" />
+        <path d="M 561 429 Q 402.1820251408258 488.1742570348637 259 571" fill="none" stroke="#E11D48" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round" />
+        
+        <g transform="translate(410, 500)">
+            <rect x="-35" y="-12" width="70" height="22" rx="6" fill="#FFFDF7" stroke="#E11D48" stroke-width="1.2" stroke-opacity="0.7"/>
+            <text x="0" y="3" text-anchor="middle" font-family="'Architects Daughter', 'Caveat', 'Comic Sans MS', cursive" font-size="12" font-weight="bold" fill="#1E293B">contains (1..*)</text>
+        </g>
+    </g>
+    
+    <g class="sketch-connector">
+        <path d="M 580 430 Q 535.0036424460876 514.669454821221 520 600" fill="none" stroke="#DB2777" stroke-width="2" stroke-linecap="round" stroke-dasharray="none" />
+        <path d="M 581 429 Q 533.0036424460876 516.669454821221 519 601" fill="none" stroke="#DB2777" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round" />
+        
+        <g transform="translate(550, 515)">
+            <rect x="-35" y="-12" width="70" height="22" rx="6" fill="#FFFDF7" stroke="#DB2777" stroke-width="1.2" stroke-opacity="0.7"/>
+            <text x="0" y="3" text-anchor="middle" font-family="'Architects Daughter', 'Caveat', 'Comic Sans MS', cursive" font-size="12" font-weight="bold" fill="#1E293B">likes (1..*)</text>
+        </g>
+    </g>
+    
+    <g class="sketch-connector">
+        <path d="M 600 430 Q 678.5784858385914 528.5559638489791 770 600" fill="none" stroke="#CA8A04" stroke-width="2" stroke-linecap="round" stroke-dasharray="none" />
+        <path d="M 601 429 Q 676.5784858385914 530.5559638489791 769 601" fill="none" stroke="#CA8A04" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round" />
+        
+        <g transform="translate(685, 515)">
+            <rect x="-35" y="-12" width="70" height="22" rx="6" fill="#FFFDF7" stroke="#CA8A04" stroke-width="1.2" stroke-opacity="0.7"/>
+            <text x="0" y="3" text-anchor="middle" font-family="'Architects Daughter', 'Caveat', 'Comic Sans MS', cursive" font-size="12" font-weight="bold" fill="#1E293B">bookmarks (1..*)</text>
+        </g>
+    </g>
+    
+    <g class="sketch-connector">
+        <path d="M 190 400 Q 181.2915685414089 462.2132396001643 190 500" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-dasharray="none" />
+        <path d="M 191 399 Q 179.2915685414089 464.2132396001643 189 501" fill="none" stroke="#0284C7" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round" />
+        
+        <g transform="translate(190, 450)">
+            <rect x="-35" y="-12" width="70" height="22" rx="6" fill="#FFFDF7" stroke="#0284C7" stroke-width="1.2" stroke-opacity="0.7"/>
+            <text x="0" y="3" text-anchor="middle" font-family="'Architects Daughter', 'Caveat', 'Comic Sans MS', cursive" font-size="12" font-weight="bold" fill="#1E293B">posts (1..*)</text>
+        </g>
+    </g>
+
+    <!-- 1. USER CLASS -->
+    
+    <g class="sketch-box">
+        <rect x="60" y="100" width="240" height="310" rx="10" ry="10" fill="#F0F9FF" />
+        <path d="M 60.43885051675801 98.66612387669548 
+                Q 180 97.14456097479535 298.66612387669545 100.43885051675801 
+                Q 301.561149483242 255 299.14456097479535 408.66612387669545 
+                Q 180 413.33387612330455 60.43885051675801 409.14456097479535 
+                Q 56.66612387669548 255 60.43885051675801 98.66612387669548 Z" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 61 99 
+                C 156 101, 228 99, 301 101 
+                C 299 224, 301 348, 299 411 
+                C 204 409, 132 411, 61 409 
+                C 59 286, 61 162, 61 99 Z" fill="none" stroke="#0284C7" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(60, 100)">
+        <rect x="0" y="0" width="240" height="42" rx="8" fill="#BAE6FD" />
+        <text x="120" y="27" text-anchor="middle" class="class-name">User</text>
+        <line x1="10" y1="42" x2="230" y2="42" stroke="#0284C7" stroke-width="1.8" />
+        
+        <text x="18" y="65" class="field-text">+ Long id</text>
+        <text x="18" y="88" class="field-text">+ String username</text>
+        <text x="18" y="111" class="field-text">+ String email</text>
+        <text x="18" y="134" class="field-text">+ String password</text>
+        <text x="18" y="157" class="field-text">+ String fullName</text>
+        <text x="18" y="180" class="field-text">+ String bio</text>
+        <text x="18" y="203" class="field-text">+ String avatarUrl</text>
+        <text x="18" y="226" class="field-text">+ Role role</text>
+        <text x="18" y="249" class="field-text">+ Boolean enabled</text>
+        <text x="18" y="272" class="field-text">+ LocalDateTime createdAt</text>
+    </g>
+
+    <!-- 2. BLOG CLASS -->
+    
+    <g class="sketch-box">
+        <rect x="420" y="100" width="280" height="330" rx="10" ry="10" fill="#F0FDF4" />
+        <path d="M 418.004409441375 101.80741022394123 
+                Q 560 97.90440811720248 701.8074102239412 98.004409441375 
+                Q 703.995590558625 265 699.9044081172025 431.80741022394125 
+                Q 560 430.19258977605875 418.004409441375 429.9044081172025 
+                Q 419.80741022394125 265 418.004409441375 101.80741022394123 Z" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 421 99 
+                C 532 101, 616 99, 701 101 
+                C 699 232, 701 364, 699 431 
+                C 588 429, 504 431, 421 429 
+                C 419 298, 421 166, 421 99 Z" fill="none" stroke="#16A34A" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(420, 100)">
+        <rect x="0" y="0" width="280" height="42" rx="8" fill="#BBF7D0" />
+        <text x="140" y="27" text-anchor="middle" class="class-name">Blog</text>
+        <line x1="10" y1="42" x2="270" y2="42" stroke="#16A34A" stroke-width="1.8" />
+        
+        <text x="18" y="65" class="field-text">+ Long id</text>
+        <text x="18" y="88" class="field-text">+ String title</text>
+        <text x="18" y="111" class="field-text">+ String slug</text>
+        <text x="18" y="134" class="field-text">+ String summary</text>
+        <text x="18" y="157" class="field-text">+ String content</text>
+        <text x="18" y="180" class="field-text">+ String coverImageUrl</text>
+        <text x="18" y="203" class="field-text">+ BlogStatus status</text>
+        <text x="18" y="226" class="field-text">+ Integer viewsCount</text>
+        <text x="18" y="249" class="field-text">+ User author</text>
+        <text x="18" y="272" class="field-text">+ Category category</text>
+        <text x="18" y="295" class="field-text">+ Set&lt;Tag&gt; tags</text>
+    </g>
+
+    <!-- 3. CATEGORY CLASS -->
+    
+    <g class="sketch-box">
+        <rect x="810" y="100" width="230" height="180" rx="10" ry="10" fill="#FFFBEB" />
+        <path d="M 808.2534641525759 101.99999999636528 
+                Q 925 97.37730155684024 1041.9999999963652 98.25346415257589 
+                Q 1043.7465358474242 190 1039.3773015568402 281.99999999636526 
+                Q 925 280.00000000363474 808.2534641525759 279.3773015568402 
+                Q 809.9999999963653 190 808.2534641525759 101.99999999636528 Z" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 811 99 
+                C 902 101, 971 99, 1041 101 
+                C 1039 172, 1041 244, 1039 281 
+                C 948 279, 879 281, 811 279 
+                C 809 208, 811 136, 811 99 Z" fill="none" stroke="#D97706" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(810, 100)">
+        <rect x="0" y="0" width="230" height="42" rx="8" fill="#FDE68A" />
+        <text x="115" y="27" text-anchor="middle" class="class-name">Category</text>
+        <line x1="10" y1="42" x2="220" y2="42" stroke="#D97706" stroke-width="1.8" />
+        
+        <text x="18" y="68" class="field-text">+ Long id</text>
+        <text x="18" y="94" class="field-text">+ String name</text>
+        <text x="18" y="120" class="field-text">+ String slug</text>
+        <text x="18" y="146" class="field-text">+ String description</text>
+    </g>
+
+    <!-- 4. TAG CLASS -->
+    
+    <g class="sketch-box">
+        <rect x="1110" y="100" width="210" height="160" rx="10" ry="10" fill="#FAF5FF" />
+        <path d="M 1109.064349818796 99.95592730949613 
+                Q 1215 99.89693456228724 1319.9559273094962 99.06434981879606 
+                Q 1322.935650181204 180 1321.8969345622872 259.95592730949613 
+                Q 1215 262.04407269050387 1109.064349818796 261.89693456228724 
+                Q 1107.9559273094962 180 1109.064349818796 99.95592730949613 Z" fill="none" stroke="#9333EA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 1111 99 
+                C 1194 101, 1257 99, 1321 101 
+                C 1319 164, 1321 228, 1319 261 
+                C 1236 259, 1173 261, 1111 259 
+                C 1109 196, 1111 132, 1111 99 Z" fill="none" stroke="#9333EA" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(1110, 100)">
+        <rect x="0" y="0" width="210" height="42" rx="8" fill="#E9D5FF" />
+        <text x="105" y="27" text-anchor="middle" class="class-name">Tag</text>
+        <line x1="10" y1="42" x2="200" y2="42" stroke="#9333EA" stroke-width="1.8" />
+        
+        <text x="18" y="70" class="field-text">+ Long id</text>
+        <text x="18" y="98" class="field-text">+ String name</text>
+        <text x="18" y="126" class="field-text">+ String slug</text>
+    </g>
+
+    <!-- 5. COMMENT CLASS -->
+    
+    <g class="sketch-box">
+        <rect x="60" y="500" width="240" height="190" rx="10" ry="10" fill="#FFF1F2" />
+        <path d="M 61.4298371705135 501.9687426705222 
+                Q 180 496.3946691162653 301.9687426705222 501.4298371705135 
+                Q 300.5701628294865 595 298.3946691162653 691.9687426705221 
+                Q 180 690.0312573294779 61.4298371705135 688.3946691162653 
+                Q 59.96874267052219 595 61.4298371705135 501.9687426705222 Z" fill="none" stroke="#E11D48" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 61 499 
+                C 156 501, 228 499, 301 501 
+                C 299 576, 301 652, 299 691 
+                C 204 689, 132 691, 61 689 
+                C 59 614, 61 538, 61 499 Z" fill="none" stroke="#E11D48" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(60, 500)">
+        <rect x="0" y="0" width="240" height="42" rx="8" fill="#FECDD3" />
+        <text x="120" y="27" text-anchor="middle" class="class-name">Comment</text>
+        <line x1="10" y1="42" x2="230" y2="42" stroke="#E11D48" stroke-width="1.8" />
+        
+        <text x="18" y="68" class="field-text">+ Long id</text>
+        <text x="18" y="94" class="field-text">+ String content</text>
+        <text x="18" y="120" class="field-text">+ Blog blog</text>
+        <text x="18" y="146" class="field-text">+ User user</text>
+        <text x="18" y="172" class="field-text">+ LocalDateTime createdAt</text>
+    </g>
+
+    <!-- 6. LIKE CLASS -->
+    
+    <g class="sketch-box">
+        <rect x="410" y="550" width="210" height="150" rx="10" ry="10" fill="#FDF2F8" />
+        <path d="M 408.0589730221905 549.6043728519915 
+                Q 515 548.7401356386578 619.6043728519915 548.0589730221905 
+                Q 623.9410269778095 625 620.7401356386578 699.6043728519915 
+                Q 515 702.3956271480085 408.0589730221905 700.7401356386578 
+                Q 407.60437285199146 625 408.0589730221905 549.6043728519915 Z" fill="none" stroke="#DB2777" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 411 549 
+                C 494 551, 557 549, 621 551 
+                C 619 610, 621 670, 619 701 
+                C 536 699, 473 701, 411 699 
+                C 409 640, 411 580, 411 549 Z" fill="none" stroke="#DB2777" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(410, 550)">
+        <rect x="0" y="0" width="210" height="42" rx="8" fill="#FBCFE8" />
+        <text x="105" y="27" text-anchor="middle" class="class-name">Like</text>
+        <line x1="10" y1="42" x2="200" y2="42" stroke="#DB2777" stroke-width="1.8" />
+        
+        <text x="18" y="68" class="field-text">+ Long id</text>
+        <text x="18" y="94" class="field-text">+ Blog blog</text>
+        <text x="18" y="120" class="field-text">+ User user</text>
+    </g>
+
+    <!-- 7. BOOKMARK CLASS -->
+    
+    <g class="sketch-box">
+        <rect x="670" y="550" width="210" height="150" rx="10" ry="10" fill="#FEFCE8" />
+        <path d="M 671.7467120693904 551.6283619410531 
+                Q 775 546.8599901028019 881.6283619410531 551.7467120693904 
+                Q 880.2532879306096 625 878.8599901028019 701.6283619410531 
+                Q 775 700.3716380589469 671.7467120693904 698.8599901028019 
+                Q 669.6283619410531 625 671.7467120693904 551.6283619410531 Z" fill="none" stroke="#CA8A04" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 671 549 
+                C 754 551, 817 549, 881 551 
+                C 879 610, 881 670, 879 701 
+                C 796 699, 733 701, 671 699 
+                C 669 640, 671 580, 671 549 Z" fill="none" stroke="#CA8A04" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(670, 550)">
+        <rect x="0" y="0" width="210" height="42" rx="8" fill="#FEF08A" />
+        <text x="105" y="27" text-anchor="middle" class="class-name">Bookmark</text>
+        <line x1="10" y1="42" x2="200" y2="42" stroke="#CA8A04" stroke-width="1.8" />
+        
+        <text x="18" y="68" class="field-text">+ Long id</text>
+        <text x="18" y="94" class="field-text">+ Blog blog</text>
+        <text x="18" y="120" class="field-text">+ User user</text>
+    </g>
+
+    <!-- 8. ROLE ENUM -->
+    
+    <g class="sketch-box">
+        <rect x="950" y="360" width="190" height="150" rx="10" ry="10" fill="#F8FAFC" />
+        <path d="M 950.0882444368361 361.6284319466886 
+                Q 1045 357.8811598595689 1141.6284319466886 360.0882444368362 
+                Q 1141.9117555631638 435 1139.881159859569 511.6284319466886 
+                Q 1045 510.3715680533114 950.0882444368361 509.8811598595689 
+                Q 949.6284319466886 435 950.0882444368361 361.6284319466886 Z" fill="none" stroke="#475569" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 951 359 
+                C 1026 361, 1083 359, 1141 361 
+                C 1139 420, 1141 480, 1139 511 
+                C 1064 509, 1007 511, 951 509 
+                C 949 450, 951 390, 951 359 Z" fill="none" stroke="#475569" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(950, 360)">
+        <rect x="0" y="0" width="190" height="42" rx="8" fill="#E2E8F0" />
+        <text x="95" y="22" text-anchor="middle" class="stereotype">&lt;&lt;enumeration&gt;&gt;</text>
+        <text x="95" y="38" text-anchor="middle" class="class-name">Role</text>
+        <line x1="10" y1="42" x2="180" y2="42" stroke="#475569" stroke-width="1.8" />
+        
+        <text x="18" y="68" class="field-text">ROLE_USER</text>
+        <text x="18" y="94" class="field-text">ROLE_AUTHOR</text>
+        <text x="18" y="120" class="field-text">ROLE_ADMIN</text>
+    </g>
+
+    <!-- 9. BLOG STATUS ENUM -->
+    
+    <g class="sketch-box">
+        <rect x="1180" y="360" width="190" height="150" rx="10" ry="10" fill="#F8FAFC" />
+        <path d="M 1181.1614187036537 358.00196371166953 
+                Q 1275 358.24848999254004 1368.0019637116695 361.16141870365374 
+                Q 1370.8385812963463 435 1370.24848999254 508.00196371166953 
+                Q 1275 513.9980362883305 1181.1614187036537 510.24848999254004 
+                Q 1176.0019637116695 435 1181.1614187036537 358.00196371166953 Z" fill="none" stroke="#475569" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 1181 359 
+                C 1256 361, 1313 359, 1371 361 
+                C 1369 420, 1371 480, 1369 511 
+                C 1294 509, 1237 511, 1181 509 
+                C 1179 450, 1181 390, 1181 359 Z" fill="none" stroke="#475569" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(1180, 360)">
+        <rect x="0" y="0" width="190" height="42" rx="8" fill="#E2E8F0" />
+        <text x="95" y="22" text-anchor="middle" class="stereotype">&lt;&lt;enumeration&gt;&gt;</text>
+        <text x="95" y="38" text-anchor="middle" class="class-name">BlogStatus</text>
+        <line x1="10" y1="42" x2="180" y2="42" stroke="#475569" stroke-width="1.8" />
+        
+        <text x="18" y="68" class="field-text">DRAFT</text>
+        <text x="18" y="94" class="field-text">PUBLISHED</text>
+        <text x="18" y="120" class="field-text">ARCHIVED</text>
+    </g>
+
+    <!-- 10. NEWS CLASS -->
+    
+    <g class="sketch-box">
+        <rect x="950" y="560" width="420" height="220" rx="10" ry="10" fill="#EEF2FF" />
+        <path d="M 951.7878852590883 561.8073585947825 
+                Q 1160 558.8546854370362 1371.8073585947825 561.7878852590883 
+                Q 1370.2121147409116 670 1370.854685437036 781.8073585947825 
+                Q 1160 780.1926414052175 951.7878852590883 780.8546854370362 
+                Q 949.8073585947825 670 951.7878852590883 561.8073585947825 Z" fill="none" stroke="#4F46E5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 951 559 
+                C 1118 561, 1244 559, 1371 561 
+                C 1369 648, 1371 736, 1369 781 
+                C 1202 779, 1076 781, 951 779 
+                C 949 692, 951 604, 951 559 Z" fill="none" stroke="#4F46E5" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(950, 560)">
+        <rect x="0" y="0" width="420" height="42" rx="8" fill="#C7D2FE" />
+        <text x="210" y="27" text-anchor="middle" class="class-name">News</text>
+        <line x1="10" y1="42" x2="410" y2="42" stroke="#4F46E5" stroke-width="1.8" />
+        
+        <text x="18" y="68" class="field-text">+ Long id, String title, String slug, String summary</text>
+        <text x="18" y="94" class="field-text">+ String content, String categoryName, String subCategoryName</text>
+        <text x="18" y="120" class="field-text">+ String imageUrl, Boolean isBreaking, Boolean isTrending</text>
+        <text x="18" y="146" class="field-text">+ Boolean isTopStory, String authorName, Integer viewsCount</text>
+        <text x="18" y="172" class="field-text">+ LocalDateTime publishedAt, LocalDateTime createdAt</text>
+    </g>
+
+    <!-- 11. EVENT CLASS -->
+    
+    <g class="sketch-box">
+        <rect x="60" y="760" width="820" height="240" rx="10" ry="10" fill="#F0FDFA" />
+        <path d="M 59.91139418464508 758.3217913482385 
+                Q 470 758.4313183816961 878.3217913482385 759.9113941846451 
+                Q 882.0886058153549 880 880.4313183816961 998.3217913482385 
+                Q 470 1003.6782086517615 59.91139418464508 1000.4313183816961 
+                Q 56.32179134823851 880 59.91139418464508 758.3217913482385 Z" fill="none" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 61 759 
+                C 388 761, 634 759, 881 761 
+                C 879 856, 881 952, 879 1001 
+                C 552 999, 306 1001, 61 999 
+                C 59 904, 61 808, 61 759 Z" fill="none" stroke="#0D9488" stroke-width="1.2" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <g transform="translate(60, 760)">
+        <rect x="0" y="0" width="820" height="42" rx="8" fill="#99F6E4" />
+        <text x="410" y="27" text-anchor="middle" class="class-name">Event</text>
+        <line x1="10" y1="42" x2="810" y2="42" stroke="#0D9488" stroke-width="1.8" />
+        
+        <text x="18" y="68" class="field-text">+ Long id, String title, String description, String categoryName, String subCategoryName</text>
+        <text x="18" y="94" class="field-text">+ String eventDate, String eventTime, String location, String registrationUrl</text>
+        <text x="18" y="120" class="field-text">+ String status (UPCOMING, ONGOING, COMPLETED, CANCELLED), String organizer</text>
+        <text x="18" y="146" class="field-text">+ String coverImageUrl, LocalDateTime createdAt</text>
+    </g>
+</svg>
