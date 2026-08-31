@@ -20,6 +20,20 @@ public class LoginRequest {
     public String getUsernameOrEmail() { return usernameOrEmail; }
     public void setUsernameOrEmail(String usernameOrEmail) { this.usernameOrEmail = usernameOrEmail; }
 
+    public String getEmail() { return usernameOrEmail; }
+    public void setEmail(String email) {
+        if (this.usernameOrEmail == null || this.usernameOrEmail.isBlank()) {
+            this.usernameOrEmail = email;
+        }
+    }
+
+    public String getUsername() { return usernameOrEmail; }
+    public void setUsername(String username) {
+        if (this.usernameOrEmail == null || this.usernameOrEmail.isBlank()) {
+            this.usernameOrEmail = username;
+        }
+    }
+
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 }

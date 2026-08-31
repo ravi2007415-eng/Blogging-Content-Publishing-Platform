@@ -56,7 +56,7 @@ export const EventCard = ({ event }) => {
               rel="noopener noreferrer"
               className="btn btn-sm btn-primary event-reg-btn"
             >
-              <span>Register</span>
+              <span>Read More</span>
               <ExternalLink size={14} />
             </a>
           )}

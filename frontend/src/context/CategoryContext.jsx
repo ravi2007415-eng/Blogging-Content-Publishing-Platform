@@ -5,8 +5,8 @@ export const CategoryContext = createContext();
 
 export const CategoryProvider = ({ children }) => {
   const [categories, setCategories] = useState(() => {
-    const saved = localStorage.getItem('keryx_categories');
-    return saved ? JSON.parse(saved) : INITIAL_TAXONOMY;
+    localStorage.removeItem('keryx_categories');
+    return INITIAL_TAXONOMY;
   });
 
   useEffect(() => {

@@ -22,9 +22,38 @@ export const BlogCard = ({ blog, onToggleLike, onToggleBookmark }) => {
     setBookmarked(!bookmarked);
     if (onToggleBookmark) onToggleBookmark(blog.id);
   };
+  const getCategoryThemeClass = (slug) => {
+    if (!slug) return 'theme-indigo';
+    switch (slug.toLowerCase()) {
+      case 'technology':
+      case 'software':
+        return 'theme-blue';
+      case 'ai-ml':
+      case 'artificial-intelligence':
+      case 'ai':
+        return 'theme-purple';
+      case 'cloud':
+      case 'devops-cloud':
+        return 'theme-cyan';
+      case 'programming':
+      case 'software-engineering':
+        return 'theme-yellow';
+      case 'business':
+      case 'career':
+      case 'startups':
+        return 'theme-orange';
+      case 'education':
+      case 'sports':
+        return 'theme-red';
+      default:
+        return 'theme-indigo';
+    }
+  };
+
+  const themeClass = getCategoryThemeClass(blog.category?.slug);
 
   return (
-    <article className="glass-card blog-card">
+    <article className={`glass-card blog-card ${themeClass}`}>
       {/* Article Cover Header */}
       {blog.coverImage && (
         <div className="card-image-wrapper">

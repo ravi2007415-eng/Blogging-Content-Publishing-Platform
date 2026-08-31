@@ -32,51 +32,36 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
   const isAdmin = user?.role === 'ROLE_ADMIN' || user?.email?.includes('admin');
 
   return (
-    <nav className="glass-panel sticky-nav">
-      <div className="nav-container">
+    <nav className="glass-panel sticky-nav editor-blue-navbar">
+      <div className="nav-container editor-navbar-container">
         {/* Brand Logo */}
-        <Link to="/" className="brand-logo">
-          <div className="logo-icon speed-logo-wrapper">
-            <SpeedMonogram size={28} />
+        <Link to="/" className="brand-logo editor-brand-logo">
+          <div className="logo-icon editor-logo-icon">
+            <SpeedMonogram size={22} />
           </div>
-          <span className="logo-text">Keryx<span className="logo-dot">.</span></span>
+          <span className="logo-text editor-logo-text">Keryx<span className="logo-dot">.</span></span>
         </Link>
 
-        {/* Global Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="search-form">
-          <Search className="search-icon" size={18} />
-          <input
-            type="text"
-            className="input-field search-input"
-            placeholder="Search updates, sub-categories, sports, events..."
-            value={searchQuery || ''}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </form>
-
-        {/* Navigation Links */}
-        <div className="nav-actions">
-          <Link to="/" className="nav-link">
-            <Home size={18} />
-            <span>Home</span>
+        {/* Navigation Links (Center/Left) */}
+        <div className="nav-center-links">
+          <Link to="/" className="nav-link-item">
+            Home
           </Link>
 
-          <Link to="/news" className="nav-link">
-            <Newspaper size={18} />
-            <span>News</span>
+          <Link to="/news" className="nav-link-item">
+            News
           </Link>
 
-          {/* Dynamic Category & Sub-Category Dropdown */}
+          {/* Categories Dropdown */}
           <div className="nav-dropdown-container">
             <button
-              className="nav-link cat-dropdown-btn"
+              className="nav-link-item dropdown-toggle-btn"
               onClick={() => {
                 setCatDropdownOpen(!catDropdownOpen);
                 setNotifDrawerOpen(false);
                 setUserDropdownOpen(false);
               }}
             >
-              <Layers size={18} />
               <span>Categories</span>
               <ChevronDown size={14} className={`chevron-icon ${catDropdownOpen ? 'rotate' : ''}`} />
             </button>
@@ -118,165 +103,160 @@ export const Navbar = ({ searchQuery, setSearchQuery }) => {
             )}
           </div>
 
-          {/* Upcoming Events Hub Link */}
-          <Link to="/events" className="nav-link">
-            <Calendar size={18} />
-            <span>Events</span>
+          <Link to="/events" className="nav-link-item">
+            Events
           </Link>
+        </div>
 
-          {/* Real-time Notifications Bell Drawer */}
-          <div className="nav-dropdown-container">
-            <button
-              className="nav-link icon-only relative"
-              title="Real-time Notifications"
-              onClick={() => {
-                setNotifDrawerOpen(!notifDrawerOpen);
-                setCatDropdownOpen(false);
-                setUserDropdownOpen(false);
-              }}
-            >
-              <Bell size={19} />
-              {unreadCount > 0 && (
-                <span className="notif-badge">{unreadCount}</span>
-              )}
-            </button>
-
-            {notifDrawerOpen && (
-              <div className="notif-drawer glass-panel shadow-2xl">
-                <div className="notif-drawer-header">
-                  <div className="notif-header-title">
-                    <Sparkles size={16} className="text-cyan" />
-                    <h4>Live Updates Feed</h4>
-                  </div>
-                  {unreadCount > 0 && (
-                    <button onClick={markAllRead} className="btn-text text-xs flex items-center gap-1">
-                      <CheckCheck size={14} /> Mark all read
-                    </button>
-                  )}
-                </div>
-
-                <div className="notif-list">
-                  {notifications.length === 0 ? (
-                    <p className="notif-empty">No updates yet.</p>
-                  ) : (
-                    notifications.map((n) => (
-                      <Link
-                        key={n.id}
-                        to={n.link || '/'}
-                        onClick={() => setNotifDrawerOpen(false)}
-                        className={`notif-item ${!n.read ? 'unread' : ''}`}
-                      >
-                        <div className="notif-item-header">
-                          <span className={`notif-type-tag type-${n.type?.toLowerCase()}`}>{n.type}</span>
-                          <span className="notif-time">{n.timestamp}</span>
-                        </div>
-                        <h5 className="notif-item-title">{n.title}</h5>
-                        <p className="notif-item-msg">{n.message}</p>
-                      </Link>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            className="btn btn-secondary icon-toggle"
-            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          >
-            {theme === 'dark' ? <Sun size={18} className="text-yellow" /> : <Moon size={18} />}
-          </button>
-
-          {/* User Auth & Role Dashboards */}
+        {/* User Auth & Actions (Right Side) */}
+        <div className="nav-right-actions">
           {isAuthenticated ? (
-            <div className="user-dropdown-container">
+            <div className="logged-in-group">
+              {/* Real-time Notifications Bell */}
+              <div className="nav-dropdown-container">
+                <button
+                  className="nav-link icon-only relative text-white"
+                  title="Real-time Notifications"
+                  onClick={() => {
+                    setNotifDrawerOpen(!notifDrawerOpen);
+                    setCatDropdownOpen(false);
+                    setUserDropdownOpen(false);
+                  }}
+                >
+                  <Bell size={19} />
+                  {unreadCount > 0 && (
+                    <span className="notif-badge">{unreadCount}</span>
+                  )}
+                </button>
+
+                {notifDrawerOpen && (
+                  <div className="notif-drawer glass-panel shadow-2xl">
+                    <div className="notif-drawer-header">
+                      <div className="notif-header-title">
+                        <Sparkles size={16} className="text-cyan" />
+                        <h4>Live Updates Feed</h4>
+                      </div>
+                      {unreadCount > 0 && (
+                        <button onClick={markAllRead} className="btn-text text-xs flex items-center gap-1">
+                          <CheckCheck size={14} /> Mark all read
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="notif-list">
+                      {notifications.length === 0 ? (
+                        <p className="notif-empty">No updates yet.</p>
+                      ) : (
+                        notifications.map((n) => (
+                          <Link
+                            key={n.id}
+                            to={n.link || '/'}
+                            onClick={() => setNotifDrawerOpen(false)}
+                            className={`notif-item ${!n.read ? 'unread' : ''}`}
+                          >
+                            <div className="notif-item-header">
+                              <span className={`notif-type-tag type-${n.type?.toLowerCase()}`}>{n.type}</span>
+                              <span className="notif-time">{n.timestamp}</span>
+                            </div>
+                            <h5 className="notif-item-title">{n.title}</h5>
+                            <p className="notif-item-msg">{n.message}</p>
+                          </Link>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Theme Toggle */}
               <button
-                className="avatar-btn"
-                onClick={() => {
-                  setUserDropdownOpen(!userDropdownOpen);
-                  setCatDropdownOpen(false);
-                  setNotifDrawerOpen(false);
-                }}
+                onClick={toggleTheme}
+                className="btn btn-secondary icon-toggle text-white border-white/20"
+                style={{ background: 'transparent' }}
+                title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               >
-                <img
-                  src={user?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
-                  alt={user?.name || 'User'}
-                  className="avatar-img"
-                />
+                {theme === 'dark' ? <Sun size={18} className="text-yellow" /> : <Moon size={18} />}
               </button>
 
-              {userDropdownOpen && (
-                <div className="dropdown-menu glass-panel shadow-2xl">
-                  <div className="dropdown-header">
-                    <p className="user-name">{user?.name || 'Creator'}</p>
-                    <p className="user-email">{user?.email || 'user@keryx.dev'}</p>
-                    <span className="badge badge-primary text-xs mt-1">{user?.role || 'ROLE_AUTHOR'}</span>
-                  </div>
-                  <hr className="dropdown-divider" />
+              {/* User Dropdown */}
+              <div className="user-dropdown-container">
+                <button
+                  className="avatar-btn"
+                  onClick={() => {
+                    setUserDropdownOpen(!userDropdownOpen);
+                    setCatDropdownOpen(false);
+                    setNotifDrawerOpen(false);
+                  }}
+                >
+                  <img
+                    src={user?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
+                    alt={user?.name || 'User'}
+                    className="avatar-img"
+                    style={{ borderColor: '#ffffff' }}
+                  />
+                </button>
 
-                  {/* Role Specific Dashboards */}
-                  {isAdmin && (
+                {userDropdownOpen && (
+                  <div className="dropdown-menu glass-panel shadow-2xl">
+                    <div className="dropdown-header">
+                      <p className="user-name">{user?.name || 'Creator'}</p>
+                      <p className="user-email">{user?.email || 'user@keryx.dev'}</p>
+                      <span className="badge badge-primary text-xs mt-1">{user?.role || 'ROLE_AUTHOR'}</span>
+                    </div>
+                    <hr className="dropdown-divider" />
+
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="dropdown-item text-pink font-semibold"
+                        onClick={() => setUserDropdownOpen(false)}
+                      >
+                        <Shield size={16} />
+                        <span>Admin Command Center</span>
+                      </Link>
+                    )}
+
                     <Link
-                      to="/admin"
-                      className="dropdown-item text-pink font-semibold"
+                      to="/dashboard"
+                      className="dropdown-item"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      <Shield size={16} />
-                      <span>Admin Command Center</span>
+                      <PenSquare size={16} />
+                      <span>Author Studio</span>
                     </Link>
-                  )}
 
-                  <Link
-                    to="/dashboard"
-                    className="dropdown-item"
-                    onClick={() => setUserDropdownOpen(false)}
-                  >
-                    <PenSquare size={16} />
-                    <span>Author Studio</span>
-                  </Link>
+                    <Link
+                      to="/user"
+                      className="dropdown-item"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      <User size={16} />
+                      <span>User Dashboard</span>
+                    </Link>
 
-                  <Link
-                    to="/user"
-                    className="dropdown-item"
-                    onClick={() => setUserDropdownOpen(false)}
-                  >
-                    <User size={16} />
-                    <span>User Dashboard</span>
-                  </Link>
+                    <hr className="dropdown-divider" />
 
-                  <Link
-                    to="/bookmarks"
-                    className="dropdown-item"
-                    onClick={() => setUserDropdownOpen(false)}
-                  >
-                    <Bookmark size={16} />
-                    <span>Bookmarks</span>
-                  </Link>
-
-                  <hr className="dropdown-divider" />
-
-                  <button
-                    onClick={() => {
-                      logout();
-                      setUserDropdownOpen(false);
-                      navigate('/');
-                    }}
-                    className="dropdown-item logout-btn"
-                  >
-                    <LogOut size={16} />
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              )}
+                    <button
+                      onClick={() => {
+                        logout();
+                        setUserDropdownOpen(false);
+                        navigate('/');
+                      }}
+                      className="dropdown-item logout-btn"
+                    >
+                      <LogOut size={16} />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
-            <div className="auth-btns">
-              <Link to="/login" className="btn btn-secondary">
+            <div className="auth-group">
+              <Link to="/login" className="nav-login-btn">
                 Sign In
               </Link>
-              <Link to="/register" className="btn btn-primary">
+              <Link to="/register" className="nav-register-btn-outline">
                 Get Started
               </Link>
             </div>

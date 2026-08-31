@@ -2,7 +2,12 @@ import axiosInstance from './axiosConfig';
 
 export const authApi = {
   login: async (credentials) => {
-    const res = await axiosInstance.post('/auth/login', credentials);
+    const payload = {
+      usernameOrEmail: credentials.usernameOrEmail || credentials.email || credentials.username || '',
+      email: credentials.email || credentials.usernameOrEmail || '',
+      password: credentials.password || '',
+    };
+    const res = await axiosInstance.post('/auth/login', payload);
     return res.data;
   },
   register: async (userData) => {
