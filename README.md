@@ -49,13 +49,11 @@ blogging-content-platform/
 │
 ├── docs/
 │   ├── api_endpoints.md                      # REST API Documentation
-│   ├── requirements.md                       # Functional & Non-functional Specs
-│   └── schema.dbml                           # Source DBML schema for dbdiagram.io
+│   └── requirements.md                       # Functional & Non-functional Specs
 │
 ├── database/
 │   ├── schema.sql
-│   ├── sample_data.sql
-│   └── schema.dbml
+│   └── sample_data.sql
 │
 ├── backend/                                  # Java 17 + Spring Boot REST API
 │   ├── .env.example
