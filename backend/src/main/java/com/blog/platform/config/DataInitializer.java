@@ -40,11 +40,22 @@ public class DataInitializer implements CommandLineRunner {
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
+            boolean needsUpdate = false;
             if (!passwordEncoder.matches("password123", user.getPassword())) {
                 user.setPassword(passwordEncoder.encode("password123"));
+                needsUpdate = true;
+            }
+            if (!Boolean.TRUE.equals(user.getEmailVerified())) {
+                user.setEmailVerified(true);
+                needsUpdate = true;
+            }
+            if (!Boolean.TRUE.equals(user.getEnabled())) {
                 user.setEnabled(true);
+                needsUpdate = true;
+            }
+            if (needsUpdate) {
                 userRepository.save(user);
-                logger.info("Updated password hash for user: {}", username);
+                logger.info("Updated default user credentials/status for: {}", username);
             }
         } else {
             User newUser = new User();
@@ -54,6 +65,7 @@ public class DataInitializer implements CommandLineRunner {
             newUser.setPassword(passwordEncoder.encode("password123"));
             newUser.setRole(role);
             newUser.setEnabled(true);
+            newUser.setEmailVerified(true);
             userRepository.save(newUser);
             logger.info("Created default user: {}", username);
         }

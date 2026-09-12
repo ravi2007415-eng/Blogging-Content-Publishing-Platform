@@ -21,9 +21,30 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @PostMapping("/send-otp")
+    public ResponseEntity<java.util.Map<String, String>> sendOtp(@Valid @RequestBody com.blog.platform.dto.SendOtpRequest request) {
+        authService.sendOtp(request);
+        return ResponseEntity.ok(java.util.Map.of(
+            "message", "OTP has been sent to your Gmail address."
+        ));
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<java.util.Map<String, String>> verifyOtp(@Valid @RequestBody com.blog.platform.dto.VerifyOtpRequest request) {
+        authService.verifyOtp(request);
+        return ResponseEntity.ok(java.util.Map.of(
+            "message", "OTP verified successfully."
+        ));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<LoginResponse> loginWithGoogle(@Valid @RequestBody com.blog.platform.dto.GoogleAuthRequest request) {
+        return ResponseEntity.ok(authService.loginWithGoogle(request));
     }
 
     @PostMapping("/register")

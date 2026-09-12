@@ -1,9 +1,9 @@
 -- Initial Seed Data for H2 Development Server
 -- Passwords: 'password123' encoded with BCrypt
-INSERT INTO users (id, username, email, password, full_name, bio, avatar_url, role, enabled, created_at, updated_at) VALUES
-(1, 'admin', 'admin@blogplatform.com', '$2a$10$zG5LOka7rorOZp.w9toGHu2GTouVdsc0cAgUrS5u7eVLw.zn6iT/K', 'Platform Administrator', 'Managing platform operations, users, and quality control.', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', 'ROLE_ADMIN', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(2, 'tech_guru', 'author@blogplatform.com', '$2a$10$zG5LOka7rorOZp.w9toGHu2GTouVdsc0cAgUrS5u7eVLw.zn6iT/K', 'Alex Mercer', 'Senior Staff Software Engineer writing on distributed systems and AI.', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', 'ROLE_AUTHOR', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(3, 'jane_dev', 'jane@example.com', '$2a$10$zG5LOka7rorOZp.w9toGHu2GTouVdsc0cAgUrS5u7eVLw.zn6iT/K', 'Jane Doe', 'Full Stack Developer & UI/UX enthusiast.', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', 'ROLE_USER', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO users (id, username, email, password, full_name, bio, avatar_url, role, enabled, email_verified, created_at, updated_at) VALUES
+(1, 'admin', 'admin@blogplatform.com', '$2a$10$zG5LOka7rorOZp.w9toGHu2GTouVdsc0cAgUrS5u7eVLw.zn6iT/K', 'Platform Administrator', 'Managing platform operations, users, and quality control.', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', 'ROLE_ADMIN', true, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(2, 'tech_guru', 'author@blogplatform.com', '$2a$10$zG5LOka7rorOZp.w9toGHu2GTouVdsc0cAgUrS5u7eVLw.zn6iT/K', 'Alex Mercer', 'Senior Staff Software Engineer writing on distributed systems and AI.', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', 'ROLE_AUTHOR', true, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(3, 'jane_dev', 'jane@example.com', '$2a$10$zG5LOka7rorOZp.w9toGHu2GTouVdsc0cAgUrS5u7eVLw.zn6iT/K', 'Jane Doe', 'Full Stack Developer & UI/UX enthusiast.', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', 'ROLE_USER', true, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO categories (id, name, slug, description, created_at) VALUES
 (1, 'Software Engineering', 'software-engineering', 'Architecture, backend design, clean code, and engineering patterns.', CURRENT_TIMESTAMP),

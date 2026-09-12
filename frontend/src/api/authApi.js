@@ -10,8 +10,20 @@ export const authApi = {
     const res = await axiosInstance.post('/auth/login', payload);
     return res.data;
   },
+  loginWithGoogle: async (idToken) => {
+    const res = await axiosInstance.post('/auth/google', { idToken });
+    return res.data;
+  },
   register: async (userData) => {
     const res = await axiosInstance.post('/auth/register', userData);
+    return res.data;
+  },
+  sendOtp: async (email) => {
+    const res = await axiosInstance.post('/auth/send-otp', { email });
+    return res.data;
+  },
+  verifyOtp: async (email, otp) => {
+    const res = await axiosInstance.post('/auth/verify-otp', { email, otp });
     return res.data;
   },
   getCurrentUser: async () => {

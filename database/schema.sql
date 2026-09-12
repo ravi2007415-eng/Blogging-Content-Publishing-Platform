@@ -23,6 +23,7 @@ CREATE TABLE users (
     avatar_url VARCHAR(500),
     role VARCHAR(20) NOT NULL DEFAULT 'ROLE_USER',
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    email_verified BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -103,8 +104,20 @@ CREATE TABLE bookmarks (
     CONSTRAINT fk_bm_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
+-- 9. Email Verifications Table (OTP)
+CREATE TABLE email_verifications (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) NOT NULL,
+    otp VARCHAR(6) NOT NULL,
+    expiry_time TIMESTAMP NOT NULL,
+    verified BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Indices for performance optimization
 CREATE INDEX idx_blogs_status ON blogs(status);
 CREATE INDEX idx_blogs_author ON blogs(author_id);
 CREATE INDEX idx_blogs_category ON blogs(category_id);
 CREATE INDEX idx_comments_blog ON comments(blog_id);
+CREATE INDEX idx_email_verifications_email ON email_verifications(email);
+

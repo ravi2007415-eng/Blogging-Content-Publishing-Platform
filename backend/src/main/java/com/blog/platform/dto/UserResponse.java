@@ -12,11 +12,16 @@ public class UserResponse {
     private String avatarUrl;
     private Role role;
     private Boolean enabled;
+    private Boolean emailVerified;
     private LocalDateTime createdAt;
 
     public UserResponse() {}
 
     public UserResponse(Long id, String username, String email, String fullName, String bio, String avatarUrl, Role role, Boolean enabled, LocalDateTime createdAt) {
+        this(id, username, email, fullName, bio, avatarUrl, role, enabled, false, createdAt);
+    }
+
+    public UserResponse(Long id, String username, String email, String fullName, String bio, String avatarUrl, Role role, Boolean enabled, Boolean emailVerified, LocalDateTime createdAt) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -25,6 +30,7 @@ public class UserResponse {
         this.avatarUrl = avatarUrl;
         this.role = role;
         this.enabled = enabled;
+        this.emailVerified = emailVerified != null ? emailVerified : false;
         this.createdAt = createdAt;
     }
 
@@ -51,6 +57,9 @@ public class UserResponse {
 
     public Boolean getEnabled() { return enabled; }
     public void setEnabled(Boolean enabled) { this.enabled = enabled; }
+
+    public Boolean getEmailVerified() { return emailVerified; }
+    public void setEmailVerified(Boolean emailVerified) { this.emailVerified = emailVerified; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

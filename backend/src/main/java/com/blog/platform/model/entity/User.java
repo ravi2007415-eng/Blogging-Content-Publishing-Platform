@@ -39,6 +39,15 @@ public class User {
     @Column(nullable = false)
     private Boolean enabled = true;
 
+    @Column(name = "email_verified", nullable = false)
+    private Boolean emailVerified = false;
+
+    @Column(name = "auth_provider", length = 30)
+    private String authProvider = "LOCAL";
+
+    @Column(name = "provider_id", length = 100)
+    private String providerId;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -48,6 +57,10 @@ public class User {
     public User() {}
 
     public User(Long id, String username, String email, String password, String fullName, String bio, String avatarUrl, Role role, Boolean enabled) {
+        this(id, username, email, password, fullName, bio, avatarUrl, role, enabled, false);
+    }
+
+    public User(Long id, String username, String email, String password, String fullName, String bio, String avatarUrl, Role role, Boolean enabled, Boolean emailVerified) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -57,6 +70,7 @@ public class User {
         this.avatarUrl = avatarUrl;
         this.role = role;
         this.enabled = enabled;
+        this.emailVerified = emailVerified != null ? emailVerified : false;
     }
 
     @PreUpdate
@@ -90,6 +104,15 @@ public class User {
 
     public Boolean getEnabled() { return enabled; }
     public void setEnabled(Boolean enabled) { this.enabled = enabled; }
+
+    public Boolean getEmailVerified() { return emailVerified; }
+    public void setEmailVerified(Boolean emailVerified) { this.emailVerified = emailVerified; }
+
+    public String getAuthProvider() { return authProvider; }
+    public void setAuthProvider(String authProvider) { this.authProvider = authProvider; }
+
+    public String getProviderId() { return providerId; }
+    public void setProviderId(String providerId) { this.providerId = providerId; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
