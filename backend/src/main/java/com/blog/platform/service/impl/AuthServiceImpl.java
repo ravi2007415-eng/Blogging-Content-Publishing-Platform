@@ -170,7 +170,9 @@ public class AuthServiceImpl implements AuthService {
         Map<String, Object> tokenInfo;
         try {
             String verifyUrl = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
-            tokenInfo = restTemplate.getForObject(verifyUrl, Map.class);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> response = (Map<String, Object>) restTemplate.getForObject(verifyUrl, Map.class);
+            tokenInfo = response;
         } catch (Exception e) {
             logger.error("Error validating Google token: {}", e.getMessage());
             throw new UnauthorizedException("Google token verification failed. Please try again.");

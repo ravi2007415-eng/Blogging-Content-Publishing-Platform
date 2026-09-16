@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { UserProvider } from './context/UserContext';
 import { CategoryProvider } from './context/CategoryContext';
 import { NotificationProvider } from './context/NotificationContext';
 import App from './App';
@@ -14,13 +13,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <UserProvider>
-            <CategoryProvider>
-              <NotificationProvider>
-                <App />
-              </NotificationProvider>
-            </CategoryProvider>
-          </UserProvider>
+          <CategoryProvider>
+            <NotificationProvider>
+              <App />
+            </NotificationProvider>
+          </CategoryProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

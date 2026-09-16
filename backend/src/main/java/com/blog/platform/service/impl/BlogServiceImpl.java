@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class BlogServiceImpl implements BlogService {
 
     private final BlogRepository blogRepository;
