@@ -209,10 +209,17 @@ export const RegisterPage = () => {
   const handleGoogleSignup = async () => {
     setGoogleLoading(true);
     setError('');
+    setSuccess('');
 
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-    if (window.google && googleClientId) {
+    if (!googleClientId) {
+      setError('Google Sign-Up requires VITE_GOOGLE_CLIENT_ID to be configured in your environment variables (.env).');
+      setGoogleLoading(false);
+      return;
+    }
+
+    if (window.google) {
       try {
         /* global google */
         window.google.accounts.id.initialize({
@@ -223,6 +230,8 @@ export const RegisterPage = () => {
                 await authApi.loginWithGoogle(response.credential);
                 setSuccess('Account created and verified with Google! Redirecting...');
                 setTimeout(() => navigate('/'), 600);
+              } else {
+                setError('Google did not return an ID token.');
               }
             } catch (err) {
               setError(err.response?.data?.message || 'Google registration failed.');
@@ -231,24 +240,18 @@ export const RegisterPage = () => {
             }
           }
         });
-        window.google.accounts.id.prompt();
+        window.google.accounts.id.prompt((notification) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            setGoogleLoading(false);
+          }
+        });
       } catch (err) {
-        console.warn('GIS error:', err);
+        setError('Failed to initialize Google Sign-In.');
         setGoogleLoading(false);
       }
     } else {
-      setTimeout(async () => {
-        try {
-          await authApi.loginWithGoogle('demo_google_id_token_test');
-          setSuccess('Signed up with Google test profile!');
-          setTimeout(() => navigate('/'), 600);
-        } catch {
-          setSuccess('Google sign-up simulation complete. Redirecting...');
-          setTimeout(() => navigate('/'), 600);
-        } finally {
-          setGoogleLoading(false);
-        }
-      }, 700);
+      setError('Google Sign-In SDK is loading. Please try again in a moment.');
+      setGoogleLoading(false);
     }
   };
 

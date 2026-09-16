@@ -25,10 +25,16 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendOtpEmail(String toEmail, String otp) {
+        if (fromEmail == null || fromEmail.isBlank() || fromEmail.equals("${spring.mail.username:}")) {
+            logger.info("=================================================");
+            logger.info(">> [LOCAL DEV / TEST MODE] OTP for {}: {} <<", toEmail, otp);
+            logger.info("=================================================");
+            return;
+        }
+
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            String sender = (fromEmail != null && !fromEmail.isBlank()) ? fromEmail : "noreply@blogplatform.com";
-            message.setFrom(sender);
+            message.setFrom(fromEmail);
             message.setTo(toEmail);
             message.setSubject("Blog Platform - Email Verification OTP");
             message.setText("Hello,\n\n"
@@ -43,7 +49,7 @@ public class EmailServiceImpl implements EmailService {
             logger.info("Verification OTP email sent successfully to {}", toEmail);
         } catch (Exception e) {
             logger.error("Failed to send OTP email to {}: {}", toEmail, e.getMessage());
-            throw new BadRequestException("Unable to send OTP. Please try again.");
+            throw new BadRequestException("Unable to send OTP email. Please verify SMTP configuration or try again.");
         }
     }
 }

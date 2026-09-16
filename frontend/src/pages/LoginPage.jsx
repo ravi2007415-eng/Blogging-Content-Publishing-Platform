@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { authApi } from '../api/authApi';
@@ -10,9 +10,7 @@ import {
   CheckCircle2, 
   Sparkles, 
   Github, 
-  Mail, 
   Loader2,
-  Lock,
   User,
   ShieldCheck,
   Send
@@ -32,34 +30,25 @@ export const LoginPage = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Demo accounts for instant one-click testing
+  // Preset demo accounts initialized in the database
   const demoAccounts = {
     author: {
       label: 'Author',
       icon: User,
       usernameOrEmail: 'author@blogplatform.com',
       password: 'password123',
-      name: 'Alex Mercer',
-      role: 'ROLE_AUTHOR',
-      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80'
     },
     admin: {
       label: 'Admin',
       icon: ShieldCheck,
       usernameOrEmail: 'admin@blogplatform.com',
       password: 'password123',
-      name: 'Platform Administrator',
-      role: 'ROLE_ADMIN',
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
     },
     reader: {
       label: 'Reader',
       icon: Sparkles,
       usernameOrEmail: 'jane@example.com',
       password: 'password123',
-      name: 'Jane Doe',
-      role: 'ROLE_USER',
-      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80'
     }
   };
 
@@ -70,12 +59,12 @@ export const LoginPage = () => {
       setUsernameOrEmail(acc.usernameOrEmail);
       setPassword(acc.password);
       setError('');
-      setSuccess(`Selected ${acc.label} account credentials.`);
-      setTimeout(() => setSuccess(''), 2200);
+      setSuccess(`Filled credentials for ${acc.label}. Click "Log in" to authenticate.`);
+      setTimeout(() => setSuccess(''), 2500);
     }
   };
 
-  // Standard username/email + password login
+  // Standard username/email + password login through backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!usernameOrEmail || !password) {
@@ -93,60 +82,36 @@ export const LoginPage = () => {
         password: password
       });
 
-      const token = response.token || response.jwtToken || response.jwt || `keryx_jwt_${Date.now()}`;
-      const user = response.user || {
-        id: response.id || 1,
-        name: response.fullName || response.username || usernameOrEmail.split('@')[0],
-        email: usernameOrEmail.includes('@') ? usernameOrEmail : `${usernameOrEmail}@blogplatform.com`,
-        role: response.role || (usernameOrEmail.includes('admin') ? 'ROLE_ADMIN' : 'ROLE_AUTHOR'),
-        avatarUrl: response.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-      };
-
-      login(token, user);
-      setSuccess('Authentication successful! Welcome back.');
-      setTimeout(() => navigate('/'), 500);
-    } catch (err) {
-      if (err.response) {
-        const errMsg = err.response?.data?.message || err.response?.data?.error || 'Invalid credentials. Please verify your email/username and password.';
-        setError(errMsg);
-      } else {
-        console.warn('Backend API login unavailable, using demo fallback:', err);
-        // Fallback for offline demo
-        const selectedDemoKey = Object.keys(demoAccounts).find(k => demoAccounts[k].usernameOrEmail === usernameOrEmail);
-        const matchedDemo = selectedDemoKey ? demoAccounts[selectedDemoKey] : null;
-
-        const fallbackToken = `keryx_jwt_${Date.now()}`;
-        const fallbackUser = matchedDemo ? {
-          id: matchedDemo.role === 'ROLE_ADMIN' ? 2 : 1,
-          name: matchedDemo.name,
-          email: matchedDemo.usernameOrEmail,
-          role: matchedDemo.role,
-          avatarUrl: matchedDemo.avatarUrl
-        } : {
-          id: 1,
-          name: usernameOrEmail.split('@')[0],
-          email: usernameOrEmail.includes('@') ? usernameOrEmail : `${usernameOrEmail}@keryx.dev`,
-          role: 'ROLE_AUTHOR',
-          avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
-        };
-
-        login(fallbackToken, fallbackUser);
-        setSuccess('Welcome! Logged in successfully.');
-        setTimeout(() => navigate('/'), 500);
+      if (!response || !response.token) {
+        throw new Error('Authentication failed: no token returned.');
       }
+
+      login(response.token, response.user);
+      setSuccess('Authentication successful! Welcome back.');
+      setTimeout(() => navigate('/'), 400);
+    } catch (err) {
+      const errMsg = err.response?.data?.message || err.response?.data?.error || err.message || 'Invalid credentials. Please verify your email/username and password.';
+      setError(errMsg);
     } finally {
       setLoading(false);
     }
   };
 
-  // Real Google OAuth 2.0 / OpenID Connect handler
+  // Google OAuth 2.0 / OpenID Connect authentication
   const handleGoogleLogin = async () => {
     setGoogleLoading(true);
     setError('');
+    setSuccess('');
 
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-    if (window.google && googleClientId) {
+    if (!googleClientId) {
+      setError('Google Sign-In requires VITE_GOOGLE_CLIENT_ID to be configured in your environment variables (.env).');
+      setGoogleLoading(false);
+      return;
+    }
+
+    if (window.google) {
       try {
         /* global google */
         window.google.accounts.id.initialize({
@@ -155,77 +120,38 @@ export const LoginPage = () => {
             try {
               if (response.credential) {
                 const apiRes = await authApi.loginWithGoogle(response.credential);
-                const token = apiRes.token || apiRes.jwtToken;
-                const user = apiRes.user || {
-                  id: apiRes.id,
-                  name: apiRes.fullName,
-                  email: apiRes.email,
-                  role: apiRes.role,
-                  avatarUrl: apiRes.avatarUrl
-                };
-                login(token, user);
+                login(apiRes.token, apiRes.user);
                 setSuccess('Signed in with Google successfully!');
-                setTimeout(() => navigate('/'), 500);
+                setTimeout(() => navigate('/'), 400);
+              } else {
+                setError('Google did not return an ID token.');
               }
             } catch (err) {
-              const errMsg = err.response?.data?.message || 'Google authentication failed on server.';
+              const errMsg = err.response?.data?.message || err.response?.data?.error || 'Google authentication failed on server.';
               setError(errMsg);
             } finally {
               setGoogleLoading(false);
             }
           }
         });
-        window.google.accounts.id.prompt();
+        window.google.accounts.id.prompt((notification) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            setGoogleLoading(false);
+          }
+        });
       } catch (err) {
-        console.warn('GIS error:', err);
+        setError('Failed to initialize Google Sign-In SDK.');
         setGoogleLoading(false);
       }
     } else {
-      // If VITE_GOOGLE_CLIENT_ID is not configured in .env yet, provide an informative test simulation
-      setTimeout(async () => {
-        try {
-          // Send sample test simulation token to backend
-          const res = await authApi.loginWithGoogle('demo_google_id_token_test');
-          login(res.token, res.user);
-          setSuccess('Signed in with Google test credentials!');
-          setTimeout(() => navigate('/'), 500);
-        } catch {
-          // If backend requires live tokeninfo, provide seamless preview
-          const mockUser = {
-            id: 88,
-            name: 'Google Verified User',
-            email: 'user.google@gmail.com',
-            role: 'ROLE_AUTHOR',
-            avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80'
-          };
-          login(`keryx_google_jwt_${Date.now()}`, mockUser);
-          setSuccess('Signed in with Google profile!');
-          setTimeout(() => navigate('/'), 500);
-        } finally {
-          setGoogleLoading(false);
-        }
-      }, 700);
+      setError('Google Sign-In SDK is still loading. Please try again in a moment.');
+      setGoogleLoading(false);
     }
-  };
-
-  const handleSocialPlaceholder = (provider) => {
-    setSuccess(`${provider} sign-in initiated. Redirecting...`);
-    setTimeout(() => {
-      const mockUser = {
-        id: 77,
-        name: `${provider} Creator`,
-        email: `creator@${provider.toLowerCase()}.com`,
-        role: 'ROLE_AUTHOR',
-        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
-      };
-      login(`keryx_${provider.toLowerCase()}_jwt_${Date.now()}`, mockUser);
-      navigate('/');
-    }, 600);
   };
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    setSuccess(`Password recovery link has been dispatched to ${usernameOrEmail || 'your email'}.`);
+    setSuccess(`Password recovery instructions have been dispatched to ${usernameOrEmail || 'your email'}.`);
     setTimeout(() => setSuccess(''), 4000);
   };
 
@@ -287,39 +213,15 @@ export const LoginPage = () => {
                 <span>Continue with Google</span>
               </button>
 
-              {/* 2. Apple OAuth Button */}
+              {/* 2. GitHub OAuth Button */}
               <button 
                 type="button" 
                 className="social-btn-row" 
-                onClick={() => handleSocialPlaceholder('Apple')}
-                disabled={loading || googleLoading}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="social-btn-icon">
-                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-1.99.6-2.63 1.35-.57.66-.99 1.72-.85 2.75 1.01.08 2.04-.52 2.56-1.25z"/>
-                </svg>
-                <span>Continue with Apple</span>
-              </button>
-
-              {/* 3. GitHub OAuth Button */}
-              <button 
-                type="button" 
-                className="social-btn-row" 
-                onClick={() => handleSocialPlaceholder('GitHub')}
+                onClick={() => setError('GitHub OAuth integration can be enabled by configuring GitHub Client credentials.')}
                 disabled={loading || googleLoading}
               >
                 <Github size={18} className="social-btn-icon" />
                 <span>Continue with GitHub</span>
-              </button>
-
-              {/* 4. Magic Link Button */}
-              <button 
-                type="button" 
-                className="social-btn-row" 
-                onClick={() => handleSocialPlaceholder('Magic Link')}
-                disabled={loading || googleLoading}
-              >
-                <Send size={16} className="social-btn-icon" />
-                <span>Email me a login link</span>
               </button>
             </div>
 
@@ -410,11 +312,11 @@ export const LoginPage = () => {
               </button>
             </form>
 
-            {/* Quick Demo Selector for Evaluation */}
+            {/* Quick Demo Selector for Instant Verification */}
             <div className="split-demo-box">
               <div className="split-demo-header">
                 <Sparkles size={13} style={{ color: '#2563eb' }} />
-                <span>Quick Demo Accounts</span>
+                <span>Default Accounts</span>
               </div>
               <div className="split-demo-pills">
                 {Object.keys(demoAccounts).map((key) => {
@@ -438,7 +340,7 @@ export const LoginPage = () => {
 
             {/* Legal Footer */}
             <div className="split-legal-footer">
-              By logging in, you agree to our <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>.
+              By logging in, you agree to our <Link to="/">Terms of Service</Link> and <Link to="/">Privacy Policy</Link>.
             </div>
 
           </div>
@@ -448,3 +350,5 @@ export const LoginPage = () => {
     </div>
   );
 };
+
+export default LoginPage;
