@@ -2,6 +2,8 @@ package com.blog.platform;
 
 import com.blog.platform.dto.LoginRequest;
 import com.blog.platform.dto.LoginResponse;
+import com.blog.platform.dto.RegisterRequest;
+import com.blog.platform.repository.UserRepository;
 import com.blog.platform.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -13,13 +15,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mail.javamail.JavaMailSender;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,6 +37,12 @@ class AuthControllerTest {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @MockBean
+    private JavaMailSender mailSender;
 
     @Test
     void testCorsPreflightOnLogin() throws Exception {
@@ -110,80 +120,67 @@ class AuthControllerTest {
     }
 
     @Test
-    void testSendOtpInvalidGmailDomain() throws Exception {
-        com.blog.platform.dto.SendOtpRequest request = new com.blog.platform.dto.SendOtpRequest("test@yahoo.com");
+    void testDirectRegistrationSuccess() throws Exception {
+        String uniqueUser = "newuser_" + System.currentTimeMillis();
+        String uniqueEmail = uniqueUser + "@example.com";
+        RegisterRequest registerRequest = new RegisterRequest(uniqueUser, uniqueEmail, "password123", "New Test User");
 
-        mockMvc.perform(post("/api/v1/auth/send-otp")
+        mockMvc.perform(post("/api/v1/auth/register")
                 .header(HttpHeaders.ORIGIN, "http://localhost:5173")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Please enter a valid Gmail address."));
+                .content(objectMapper.writeValueAsString(registerRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173"))
+                .andExpect(jsonPath("$.username").value(uniqueUser))
+                .andExpect(jsonPath("$.email").value(uniqueEmail))
+                .andExpect(jsonPath("$.fullName").value("New Test User"))
+                .andExpect(jsonPath("$.enabled").value(true))
+                .andExpect(jsonPath("$.emailVerified").value(true));
+
+        // Now test login with this newly registered user
+        LoginRequest loginRequest = new LoginRequest(uniqueEmail, "password123");
+        mockMvc.perform(post("/api/v1/auth/login")
+                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.user.username").value(uniqueUser));
     }
 
-    @Autowired
-    private com.blog.platform.repository.UserRepository userRepository;
-
     @Test
-    void testSendOtpAlreadyRegisteredEmail() throws Exception {
-        String testEmail = "existinguser@gmail.com";
-        if (!userRepository.existsByEmail(testEmail)) {
-            com.blog.platform.model.entity.User user = new com.blog.platform.model.entity.User();
-            user.setUsername("existinguser");
-            user.setEmail(testEmail);
-            user.setPassword("password123");
-            user.setFullName("Existing User");
-            user.setRole(com.blog.platform.model.enums.Role.ROLE_USER);
-            user.setEnabled(true);
-            user.setEmailVerified(true);
-            userRepository.save(user);
-        }
+    void testRegisterDuplicateUsername() throws Exception {
+        RegisterRequest registerRequest = new RegisterRequest("admin", "brandnewunique@example.com", "password123", "Admin Dupe");
 
-        com.blog.platform.dto.SendOtpRequest request = new com.blog.platform.dto.SendOtpRequest(testEmail);
-
-        mockMvc.perform(post("/api/v1/auth/send-otp")
+        mockMvc.perform(post("/api/v1/auth/register")
                 .header(HttpHeaders.ORIGIN, "http://localhost:5173")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Email is already registered."));
+                .andExpect(jsonPath("$.message").value("Username is already taken."));
     }
 
     @Test
-    void testVerifyOtpNonExistent() throws Exception {
-        com.blog.platform.dto.VerifyOtpRequest request = new com.blog.platform.dto.VerifyOtpRequest("newuser999@gmail.com", "123456");
+    void testRegisterDuplicateEmail() throws Exception {
+        RegisterRequest registerRequest = new RegisterRequest("uniqueuser_" + System.currentTimeMillis(), "admin@blogplatform.com", "password123", "Admin Email Dupe");
 
-        mockMvc.perform(post("/api/v1/auth/verify-otp")
+        mockMvc.perform(post("/api/v1/auth/register")
                 .header(HttpHeaders.ORIGIN, "http://localhost:5173")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Please request a new OTP."));
+                .content(objectMapper.writeValueAsString(registerRequest)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("This email is already registered. Please log in."));
     }
 
     @Test
-    void testUnverifiedUserLoginRejected() throws Exception {
-        String testEmail = "unverifieduser@gmail.com";
-        if (!userRepository.existsByEmail(testEmail)) {
-            org.springframework.security.crypto.password.PasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
-            com.blog.platform.model.entity.User user = new com.blog.platform.model.entity.User();
-            user.setUsername("unverifieduser");
-            user.setEmail(testEmail);
-            user.setPassword(encoder.encode("password123"));
-            user.setFullName("Unverified User");
-            user.setRole(com.blog.platform.model.enums.Role.ROLE_USER);
-            user.setEnabled(true);
-            user.setEmailVerified(false);
-            userRepository.save(user);
-        }
-
-        LoginRequest loginRequest = new LoginRequest(testEmail, "password123");
+    void testInvalidCredentialsReturns401() throws Exception {
+        LoginRequest loginRequest = new LoginRequest("admin@blogplatform.com", "wrongpassword");
 
         mockMvc.perform(post("/api/v1/auth/login")
                 .header(HttpHeaders.ORIGIN, "http://localhost:5173")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").value("Please verify your email before logging in."));
+                .andExpect(jsonPath("$.message").value("Invalid username/email or password."));
     }
 }

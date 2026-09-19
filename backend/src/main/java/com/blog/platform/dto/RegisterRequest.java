@@ -26,6 +26,14 @@ public class RegisterRequest {
 
     public RegisterRequest() {}
 
+    public RegisterRequest(String username, String email, String password, String fullName) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+    }
+
+
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 

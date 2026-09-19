@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 public class VerifyOtpRequest {
 
     @NotBlank(message = "Email is required")
-    @Email(message = "Please enter a valid Gmail address.")
+    @Email(message = "Please enter a valid email address.")
     private String email;
 
     @NotBlank(message = "OTP is required")

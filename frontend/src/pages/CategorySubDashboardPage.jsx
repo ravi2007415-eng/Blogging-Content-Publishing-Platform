@@ -4,12 +4,12 @@ import { CategoryContext } from '../context/CategoryContext';
 import { BlogCard } from '../components/BlogCard';
 import { EventCard } from '../components/EventCard';
 import { MOCK_BLOGS, MOCK_EVENTS } from '../mockData';
-import { Trophy, Landmark, Cpu, Film, Smile, Calendar, Sparkles, Filter, Layers, ArrowLeft } from 'lucide-react';
+import { Trophy, ArrowLeft, Layers, Sparkles } from 'lucide-react';
 
 export const CategorySubDashboardPage = () => {
   const { categorySlug, subCategorySlug } = useParams();
   const { categories, getCategoryBySlug } = useContext(CategoryContext);
-  const [activeTab, setActiveTab] = useState('all'); // 'all', 'posts', 'events', 'trending'
+  const [activeTab, setActiveTab] = useState('all'); // 'all', 'posts', 'events'
 
   const currentCategory = getCategoryBySlug(categorySlug) || {
     name: categorySlug ? categorySlug.toUpperCase() : 'Category',
@@ -51,45 +51,46 @@ export const CategorySubDashboardPage = () => {
   });
 
   return (
-    <div className="page-container category-subdashboard-page">
+    <div className="page-container category-subdashboard-page space-y-6">
       
       {/* Category Header Hero Banner */}
-      <div className="category-hero-panel glass-panel">
-        <div className="category-hero-content">
-          <div className="breadcrumbs">
-            <Link to="/" className="breadcrumb-item"><ArrowLeft size={14} /> Home</Link>
-            <span className="breadcrumb-sep">/</span>
-            <Link to={`/category/${currentCategory.slug}`} className="breadcrumb-item">{currentCategory.name}</Link>
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 shadow-sm">
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+            <Link to="/" className="hover:text-blue-600 flex items-center gap-1">
+              <ArrowLeft size={13} /> Home
+            </Link>
+            <span>/</span>
+            <Link to={`/category/${currentCategory.slug}`} className="hover:text-blue-600">
+              {currentCategory.name}
+            </Link>
             {activeSubCategory && (
               <>
-                <span className="breadcrumb-sep">/</span>
-                <span className="breadcrumb-active">{activeSubCategory.name}</span>
+                <span>/</span>
+                <span className="text-blue-600 font-semibold">{activeSubCategory.name}</span>
               </>
             )}
           </div>
 
-          <div className="category-header-title-row">
-            <div className="category-icon-box">
-              <Trophy size={32} className="text-cyan" />
-            </div>
+          <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <h1 className="category-hero-title">
+              <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-900 mb-2">
                 {activeSubCategory ? `${currentCategory.name} → ${activeSubCategory.name}` : `${currentCategory.name} Sub-Dashboard`}
               </h1>
-              <p className="category-hero-desc">
+              <p className="text-sm text-slate-600 max-w-2xl leading-relaxed">
                 {activeSubCategory?.description || currentCategory.description}
               </p>
             </div>
-          </div>
 
-          <div className="category-stats-row">
-            <div className="cat-stat-badge">
-              <span className="cat-stat-num">{filteredPosts.length}</span>
-              <span className="cat-stat-lbl">Articles</span>
-            </div>
-            <div className="cat-stat-badge">
-              <span className="cat-stat-num">{filteredEvents.length}</span>
-              <span className="cat-stat-lbl">Upcoming Events</span>
+            <div className="flex gap-3">
+              <div className="bg-blue-50 border border-blue-100 px-4 py-2 rounded-xl text-center">
+                <span className="block text-lg font-extrabold text-blue-600">{filteredPosts.length}</span>
+                <span className="text-xs text-slate-500 uppercase font-semibold">Articles</span>
+              </div>
+              <div className="bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl text-center">
+                <span className="block text-lg font-extrabold text-slate-800">{filteredEvents.length}</span>
+                <span className="text-xs text-slate-500 uppercase font-semibold">Events</span>
+              </div>
             </div>
           </div>
         </div>
@@ -97,15 +98,15 @@ export const CategorySubDashboardPage = () => {
 
       {/* Sub-Categories Navigation Pills */}
       {currentCategory.subCategories && currentCategory.subCategories.length > 0 && (
-        <div className="sub-categories-pill-bar glass-panel">
-          <div className="pill-bar-header">
-            <Layers size={16} className="text-pink" />
+        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex items-center gap-3 overflow-x-auto">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 uppercase shrink-0">
+            <Layers size={15} className="text-blue-600" />
             <span>Sub-Categories:</span>
           </div>
-          <div className="pill-scroll-container">
+          <div className="flex gap-2 shrink-0">
             <Link
               to={`/category/${currentCategory.slug}`}
-              className={`sub-cat-pill ${!subCategorySlug ? 'active' : ''}`}
+              className={`pill-btn text-xs ${!subCategorySlug ? 'active' : ''}`}
             >
               All {currentCategory.name}
             </Link>
@@ -113,7 +114,7 @@ export const CategorySubDashboardPage = () => {
               <Link
                 key={sub.id}
                 to={`/category/${currentCategory.slug}/${sub.slug}`}
-                className={`sub-cat-pill ${subCategorySlug?.toLowerCase() === sub.slug.toLowerCase() ? 'active' : ''}`}
+                className={`pill-btn text-xs ${subCategorySlug?.toLowerCase() === sub.slug.toLowerCase() ? 'active' : ''}`}
               >
                 {sub.name}
               </Link>
@@ -123,114 +124,94 @@ export const CategorySubDashboardPage = () => {
       )}
 
       {/* Content View Tabs Filter */}
-      <div className="dashboard-content-grid">
-        <div className="main-content-col">
-          
-          <div className="section-header-bar">
-            <div className="tab-filters">
-              <button
-                className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`}
-                onClick={() => setActiveTab('all')}
-              >
-                All Content
-              </button>
-              <button
-                className={`tab-btn ${activeTab === 'posts' ? 'active' : ''}`}
-                onClick={() => setActiveTab('posts')}
-              >
-                Articles ({filteredPosts.length})
-              </button>
-              <button
-                className={`tab-btn ${activeTab === 'events' ? 'active' : ''}`}
-                onClick={() => setActiveTab('events')}
-              >
-                Upcoming Events ({filteredEvents.length})
-              </button>
-            </div>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center border-b border-slate-200 pb-3">
+          <div className="quick-category-pills">
+            <button
+              className={`pill-btn text-xs ${activeTab === 'all' ? 'active' : ''}`}
+              onClick={() => setActiveTab('all')}
+            >
+              All Content ({filteredPosts.length + filteredEvents.length})
+            </button>
+            <button
+              className={`pill-btn text-xs ${activeTab === 'posts' ? 'active' : ''}`}
+              onClick={() => setActiveTab('posts')}
+            >
+              Articles ({filteredPosts.length})
+            </button>
+            <button
+              className={`pill-btn text-xs ${activeTab === 'events' ? 'active' : ''}`}
+              onClick={() => setActiveTab('events')}
+            >
+              Events ({filteredEvents.length})
+            </button>
           </div>
+        </div>
 
-          {/* Render Filtered Upcoming Events if activeTab is 'events' or 'all' */}
-          {(activeTab === 'all' || activeTab === 'events') && filteredEvents.length > 0 && (
-            <div className="subdashboard-events-section mb-8">
-              <div className="subsection-title-bar">
-                <Calendar size={18} className="text-pink" />
-                <h3>Category Upcoming Events</h3>
-              </div>
-              <div className="events-grid">
-                {filteredEvents.map(event => (
-                  <EventCard key={event.id} event={event} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Render Filtered Posts if activeTab is 'posts' or 'all' */}
-          {(activeTab === 'all' || activeTab === 'posts') && (
-            <div className="subdashboard-posts-section">
-              <div className="subsection-title-bar">
-                <Sparkles size={18} className="text-cyan" />
-                <h3>Latest {activeSubCategory ? activeSubCategory.name : currentCategory.name} Updates</h3>
-              </div>
-
-              {filteredPosts.length === 0 ? (
-                <div className="empty-state-panel glass-panel text-center py-12">
-                  <p className="text-muted">No published stories in this sub-category yet.</p>
-                  <Link to="/write" className="btn btn-primary mt-4">
-                    Publish First Story
-                  </Link>
-                </div>
-              ) : (
+        {/* Tab 1: All Content */}
+        {activeTab === 'all' && (
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <Sparkles size={18} className="text-blue-600" />
+                <span>Featured Articles</span>
+              </h3>
+              {filteredPosts.length > 0 ? (
                 <div className="blogs-grid">
                   {filteredPosts.map(blog => (
-                    <BlogCard key={blog.id} blog={blog} />
+                    <BlogCard key={`sub-post-${blog.id}`} blog={blog} />
                   ))}
+                </div>
+              ) : (
+                <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500 text-sm">
+                  No articles published under this category yet.
                 </div>
               )}
             </div>
-          )}
 
-        </div>
-
-        {/* Sidebar Widgets */}
-        <div className="sidebar-col">
-          
-          {/* Quick Sub-Category Summary Widget */}
-          <div className="sidebar-widget glass-panel">
-            <h4 className="widget-title">About {activeSubCategory ? activeSubCategory.name : currentCategory.name}</h4>
-            <p className="widget-desc text-muted">
-              {activeSubCategory?.description || currentCategory.description}
-            </p>
-            <hr className="my-3 border-glass" />
-            <div className="widget-action">
-              <Link to="/write" className="btn btn-outline btn-sm w-full text-center">
-                Publish in {activeSubCategory ? activeSubCategory.name : currentCategory.name}
-              </Link>
-            </div>
+            {filteredEvents.length > 0 && (
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 mb-4">Upcoming Category Events</h3>
+                <div className="events-grid">
+                  {filteredEvents.map(ev => (
+                    <EventCard key={`sub-ev-${ev.id}`} event={ev} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+        )}
 
-          {/* Upcoming Events Mini Widget */}
-          {filteredEvents.length > 0 && activeTab !== 'events' && (
-            <div className="sidebar-widget glass-panel">
-              <div className="widget-header">
-                <Calendar size={16} className="text-pink" />
-                <h4 className="widget-title">Upcoming Event Spotlight</h4>
+        {/* Tab 2: Articles Only */}
+        {activeTab === 'posts' && (
+          <div className="blogs-grid">
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map(blog => (
+                <BlogCard key={`posts-only-${blog.id}`} blog={blog} />
+              ))
+            ) : (
+              <div className="col-span-full bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500 text-sm">
+                No articles found.
               </div>
-              <div className="spotlight-event-box">
-                <h5 className="font-bold text-sm mb-1">{filteredEvents[0].title}</h5>
-                <p className="text-xs text-muted mb-2">{filteredEvents[0].eventDate} • {filteredEvents[0].location}</p>
-                <a
-                  href={filteredEvents[0].registrationUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn btn-sm btn-primary w-full text-center"
-                >
-                  Register Now
-                </a>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
+        )}
 
-        </div>
+        {/* Tab 3: Events Only */}
+        {activeTab === 'events' && (
+          <div className="events-grid">
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map(ev => (
+                <EventCard key={`events-only-${ev.id}`} event={ev} />
+              ))
+            ) : (
+              <div className="col-span-full bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500 text-sm">
+                No scheduled events found for this category.
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
     </div>
   );

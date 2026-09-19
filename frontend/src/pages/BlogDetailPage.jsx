@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { MOCK_BLOGS } from '../mockData';
 import { CommentSection } from '../components/CommentSection';
 import { formatDate, calculateReadTime } from '../utils/helpers';
-import { ArrowLeft, Clock, Heart, Bookmark, Share2, Tag, Check, Calendar } from 'lucide-react';
+import { ArrowLeft, Clock, Heart, Bookmark, Share2, Tag, Check, Calendar, Image as ImageIcon } from 'lucide-react';
 
 export const BlogDetailPage = () => {
   const { idOrSlug } = useParams();
@@ -11,12 +11,13 @@ export const BlogDetailPage = () => {
   // Find blog by slug or id
   const blog = MOCK_BLOGS.find(
     (b) => b.slug === idOrSlug || b.id.toString() === idOrSlug
-  ) || MOCK_BLOGS[0]; // fallback to first mock post for smooth UI preview
+  ) || MOCK_BLOGS[0];
 
   const [liked, setLiked] = useState(blog.isLiked || false);
   const [likesCount, setLikesCount] = useState(blog.likesCount || 0);
   const [bookmarked, setBookmarked] = useState(blog.isBookmarked || false);
   const [copied, setCopied] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const handleLike = () => {
     setLiked(!liked);
@@ -29,31 +30,39 @@ export const BlogDetailPage = () => {
     setTimeout(() => setCopied(false), 2500);
   };
 
+  const hasImage = Boolean(blog.coverImage) && !imgError;
+
   return (
     <article className="blog-detail-container">
       {/* Back button */}
       <Link to="/" className="back-link">
-        <ArrowLeft size={18} />
+        <ArrowLeft size={16} />
         <span>Back to Feed</span>
       </Link>
 
       {/* Header Info */}
-      <header className="detail-header">
+      <header className="mb-6">
         {blog.category && (
-          <span className="badge badge-primary detail-category">
-            {blog.category.name}
-          </span>
+          <div className="mb-3">
+            <span className="badge badge-primary">
+              {blog.category.name}
+            </span>
+          </div>
         )}
         <h1 className="detail-title">{blog.title}</h1>
 
-        <div className="detail-author-row glass-panel">
+        <div className="detail-author-row">
           <div className="author-meta-large">
             <img
               src={blog.author?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'}
               alt={blog.author?.name}
               className="author-avatar-lg"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80';
+              }}
             />
-            <div className="author-details">
+            <div>
               <h4 className="author-name-lg">{blog.author?.name || 'Technical Writer'}</h4>
               <p className="author-bio">{blog.author?.bio || 'Building future tech systems.'}</p>
             </div>
@@ -61,11 +70,11 @@ export const BlogDetailPage = () => {
 
           <div className="meta-stats-column">
             <span className="meta-item">
-              <Calendar size={14} />
+              <Calendar size={14} className="text-blue" />
               {formatDate(blog.createdAt)}
             </span>
             <span className="meta-item">
-              <Clock size={14} />
+              <Clock size={14} className="text-blue" />
               {blog.readTime || calculateReadTime(blog.content)}
             </span>
           </div>
@@ -75,12 +84,24 @@ export const BlogDetailPage = () => {
       {/* Cover Image */}
       {blog.coverImage && (
         <div className="detail-cover-wrapper">
-          <img src={blog.coverImage} alt={blog.title} className="detail-cover-img" />
+          {hasImage ? (
+            <img 
+              src={blog.coverImage} 
+              alt={blog.title} 
+              className="detail-cover-img" 
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className="h-64 flex flex-col items-center justify-center bg-slate-100 text-slate-400 gap-2">
+              <ImageIcon size={36} />
+              <span className="text-sm">No cover image available</span>
+            </div>
+          )}
         </div>
       )}
 
       {/* Main Body Content */}
-      <div className="detail-body-wrapper glass-panel">
+      <div className="detail-body-wrapper">
         <div className="article-content">
           {blog.content.split('\n\n').map((paragraph, index) => {
             if (paragraph.startsWith('### ')) {
@@ -108,7 +129,7 @@ export const BlogDetailPage = () => {
         {/* Tags Row */}
         {blog.tags && blog.tags.length > 0 && (
           <div className="detail-tags-row">
-            <Tag size={16} className="text-muted" />
+            <Tag size={16} className="text-slate-400" />
             {blog.tags.map((t, idx) => (
               <span key={idx} className="tag-pill">
                 #{t.name || t}
@@ -117,26 +138,28 @@ export const BlogDetailPage = () => {
           </div>
         )}
 
-        {/* Engagement Floating Bar */}
+        {/* Engagement Floating Actions */}
         <div className="detail-actions-bar">
           <button
             onClick={handleLike}
             className={`btn ${liked ? 'btn-primary' : 'btn-secondary'} action-btn-large`}
+            type="button"
           >
-            <Heart size={20} fill={liked ? 'currentColor' : 'none'} />
+            <Heart size={18} fill={liked ? 'currentColor' : 'none'} />
             <span>{likesCount} Likes</span>
           </button>
 
           <button
             onClick={() => setBookmarked(!bookmarked)}
             className={`btn ${bookmarked ? 'btn-primary' : 'btn-secondary'} action-btn-large`}
+            type="button"
           >
-            <Bookmark size={20} fill={bookmarked ? 'currentColor' : 'none'} />
+            <Bookmark size={18} fill={bookmarked ? 'currentColor' : 'none'} />
             <span>{bookmarked ? 'Bookmarked' : 'Save Story'}</span>
           </button>
 
-          <button onClick={handleShare} className="btn btn-secondary action-btn-large">
-            {copied ? <Check size={20} className="text-green" /> : <Share2 size={20} />}
+          <button onClick={handleShare} className="btn btn-secondary action-btn-large" type="button">
+            {copied ? <Check size={18} className="text-emerald-600" /> : <Share2 size={18} />}
             <span>{copied ? 'Link Copied!' : 'Share'}</span>
           </button>
         </div>
@@ -147,3 +170,5 @@ export const BlogDetailPage = () => {
     </article>
   );
 };
+
+export default BlogDetailPage;

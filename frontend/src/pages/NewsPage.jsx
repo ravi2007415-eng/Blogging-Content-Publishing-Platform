@@ -4,8 +4,8 @@ import { CategoryContext } from '../context/CategoryContext';
 import { NotificationContext } from '../context/NotificationContext';
 import { NewsCard } from '../components/NewsCard';
 import { 
-  Newspaper, Radio, Flame, Award, Clock, Search, Filter, 
-  ArrowUpDown, RefreshCw, Sparkles, Layers, ChevronRight 
+  Newspaper, Radio, Flame, Award, Clock, Search, 
+  ArrowUpDown, RefreshCw, Sparkles, Layers 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ export const NewsPage = () => {
 
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
-  const [sortOption, setSortOption] = useState('newest'); // 'newest', 'oldest', 'popular'
+  const [sortOption, setSortOption] = useState('newest');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [pollingActive, setPollingActive] = useState(true);
@@ -34,10 +34,10 @@ export const NewsPage = () => {
       const top = await newsApi.getTopStories();
       const trending = await newsApi.getTrendingNews();
 
-      setNewsList(data);
-      setBreakingNews(breaking);
-      setTopStories(top);
-      setTrendingNews(trending);
+      setNewsList(data || []);
+      setBreakingNews(breaking || []);
+      setTopStories(top || []);
+      setTrendingNews(trending || []);
     } catch (err) {
       console.error('Failed to load news:', err);
     } finally {
@@ -49,7 +49,7 @@ export const NewsPage = () => {
     loadNews();
   }, [selectedCategory, selectedSubCategory, sortOption]);
 
-  // Automatic REST Polling for new news updates every 12 seconds
+  // Automatic REST Polling for new news updates
   useEffect(() => {
     if (!pollingActive) return;
 
@@ -62,7 +62,6 @@ export const NewsPage = () => {
             const newItems = latestItems.filter(item => !existingIds.has(item.id));
             
             if (newItems.length > 0) {
-              // Trigger live notification toast for new breaking news story
               newItems.forEach(item => {
                 broadcastPost({
                   title: item.title,
@@ -87,7 +86,6 @@ export const NewsPage = () => {
   const currentCategoryObj = categories.find(c => c.name.toLowerCase() === selectedCategory.toLowerCase() || c.slug === selectedCategory);
   const availableSubCategories = currentCategoryObj ? (currentCategoryObj.subCategories || []) : [];
 
-  // Filter news client side for search query
   const filteredNews = newsList.filter(n => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
@@ -102,84 +100,82 @@ export const NewsPage = () => {
       
       {/* Breaking News Banner Header */}
       {breakingNews.length > 0 && (
-        <div className="breaking-news-hero glass-panel p-6 border-l-4 border-pink-500 relative overflow-hidden">
+        <div className="bg-white border border-rose-200 rounded-2xl p-6 border-l-4 border-l-rose-500 shadow-sm relative overflow-hidden">
           <div className="flex justify-between items-center mb-3">
             <div className="flex items-center gap-2">
               <span className="badge badge-pink animate-pulse flex items-center gap-1 font-bold">
-                <Radio size={14} /> BREAKING NEWS
+                <Radio size={13} /> BREAKING NEWS
               </span>
-              <span className="text-xs text-muted">Updated Live via REST Polling Engine</span>
+              <span className="text-xs text-slate-500">Live Coverage</span>
             </div>
             <button
               onClick={() => setPollingActive(!pollingActive)}
-              className={`btn btn-xs ${pollingActive ? 'btn-success' : 'btn-secondary'} flex items-center gap-1`}
-              title="Toggle automatic background REST polling"
+              className={`btn btn-xs ${pollingActive ? 'btn-outline text-emerald-600 border-emerald-200 bg-emerald-50' : 'btn-secondary'} flex items-center gap-1`}
+              title="Toggle live updates"
             >
-              <RefreshCw size={12} className={pollingActive ? 'animate-spin' : ''} />
+              <RefreshCw size={11} className={pollingActive ? 'animate-spin' : ''} />
               <span>{pollingActive ? 'Live Polling Active' : 'Polling Paused'}</span>
             </button>
           </div>
 
-          <h2 className="text-2xl font-extrabold hover:text-pink transition">
+          <h2 className="text-2xl font-extrabold text-slate-900 hover:text-blue-600 transition leading-snug">
             <Link to={`/news/${breakingNews[0].slug || breakingNews[0].id}`}>
               {breakingNews[0].title}
             </Link>
           </h2>
-          <p className="text-sm text-muted mt-2 line-clamp-2">{breakingNews[0].summary}</p>
+          <p className="text-sm text-slate-600 mt-2 line-clamp-2">{breakingNews[0].summary}</p>
         </div>
       )}
 
       {/* Main Title & Search Bar */}
-      <div className="news-title-bar flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Newspaper size={24} className="text-cyan" />
-            <h1 className="text-3xl font-extrabold">Keryx Latest News</h1>
+            <Newspaper size={24} className="text-blue-600" />
+            <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-900">Keryx Latest News</h1>
           </div>
-          <p className="text-xs text-muted">
-            Real-time news coverage across Sports, Technology, Politics, Entertainment & World Affairs.
+          <p className="text-xs text-slate-500">
+            Real-time news coverage across Technology, AI, Cloud, Business & Global Affairs.
           </p>
         </div>
 
         {/* Search & Sort Bar */}
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
-          <div className="search-input-wrap flex-1 md:w-64 relative">
-            <Search size={16} className="absolute left-3 top-3 text-muted" />
+          <div className="relative flex-1 md:w-64">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              className="input-field pl-9"
-              placeholder="Search news..."
+              className="input-field pl-9 text-xs"
+              placeholder="Search news stories..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
-          {/* Sort Dropdown */}
-          <div className="sort-wrapper relative">
+          <div className="relative">
             <select
-              className="input-field select-field pl-8"
+              className="input-field text-xs font-semibold py-2 pr-8 cursor-pointer"
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
             >
-              <option value="newest">Sort: Newest First</option>
-              <option value="oldest">Sort: Oldest First</option>
-              <option value="popular">Sort: Most Viewed</option>
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="popular">Most Viewed</option>
             </select>
-            <ArrowUpDown size={14} className="absolute left-3 top-3 text-muted pointer-events-none" />
           </div>
         </div>
       </div>
 
       {/* Category & Subcategory Filter Tabs */}
-      <div className="news-category-filter-bar glass-panel p-4 rounded-xl space-y-3">
+      <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs space-y-3">
         <div className="flex items-center gap-2">
-          <Layers size={16} className="text-pink" />
-          <span className="text-xs font-bold uppercase text-muted">News Categories:</span>
+          <Layers size={15} className="text-blue-600" />
+          <span className="text-xs font-bold uppercase text-slate-600">News Channels:</span>
         </div>
 
-        <div className="category-pills-row justify-start">
+        <div className="quick-category-pills">
           <button
-            className={`pill-btn ${selectedCategory === '' ? 'active' : ''}`}
+            className={`pill-btn text-xs ${selectedCategory === '' ? 'active' : ''}`}
             onClick={() => {
               setSelectedCategory('');
               setSelectedSubCategory('');
@@ -190,7 +186,7 @@ export const NewsPage = () => {
           {categories.map((cat) => (
             <button
               key={cat.id}
-              className={`pill-btn ${selectedCategory.toLowerCase() === cat.name.toLowerCase() ? 'active' : ''}`}
+              className={`pill-btn text-xs ${selectedCategory.toLowerCase() === cat.name.toLowerCase() ? 'active' : ''}`}
               onClick={() => {
                 if (selectedCategory.toLowerCase() === cat.name.toLowerCase()) {
                   setSelectedCategory('');
@@ -208,10 +204,10 @@ export const NewsPage = () => {
 
         {/* Sub-Category Pills Bar if Category selected */}
         {selectedCategory && availableSubCategories.length > 0 && (
-          <div className="sub-pills-subbar pt-3 border-t border-glass flex items-center justify-start gap-2 overflow-x-auto">
-            <span className="text-xs font-bold text-cyan mr-1">Sub-Categories:</span>
+          <div className="pt-3 border-t border-slate-100 flex items-center gap-2 overflow-x-auto">
+            <span className="text-xs font-bold text-blue-600 mr-1 shrink-0">Subtopics:</span>
             <button
-              className={`pill-btn pill-btn-sm ${selectedSubCategory === '' ? 'active' : ''}`}
+              className={`pill-btn text-xs ${selectedSubCategory === '' ? 'active' : ''}`}
               onClick={() => setSelectedSubCategory('')}
             >
               All {currentCategoryObj.name}
@@ -219,7 +215,7 @@ export const NewsPage = () => {
             {availableSubCategories.map(sub => (
               <button
                 key={sub.id}
-                className={`pill-btn pill-btn-sm ${selectedSubCategory.toLowerCase() === sub.name.toLowerCase() ? 'active' : ''}`}
+                className={`pill-btn text-xs ${selectedSubCategory.toLowerCase() === sub.name.toLowerCase() ? 'active' : ''}`}
                 onClick={() => setSelectedSubCategory(selectedSubCategory.toLowerCase() === sub.name.toLowerCase() ? '' : sub.name)}
               >
                 {sub.name}
@@ -235,80 +231,74 @@ export const NewsPage = () => {
         {/* Main Latest News Grid */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-bold flex items-center gap-2">
-              <Sparkles size={18} className="text-cyan" />
+            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <Sparkles size={18} className="text-blue-600" />
               <span>Latest News Stream ({filteredNews.length})</span>
             </h3>
           </div>
 
           {loading ? (
-            <div className="glass-panel p-12 text-center text-muted">
-              <RefreshCw size={24} className="animate-spin mx-auto mb-2" />
-              <p>Fetching latest news stream...</p>
+            <div className="bg-white border border-slate-200 p-12 text-center text-slate-500 rounded-2xl">
+              <RefreshCw size={24} className="animate-spin mx-auto mb-2 text-blue-600" />
+              <p className="text-sm">Fetching latest news stream...</p>
             </div>
           ) : filteredNews.length === 0 ? (
-            <div className="glass-panel p-12 text-center">
-              <p className="text-muted">No news stories found matching your filter criteria.</p>
-              <button
-                onClick={() => { setSelectedCategory(''); setSelectedSubCategory(''); setSearchQuery(''); }}
-                className="btn btn-secondary mt-3"
-              >
-                Reset Filters
-              </button>
+            <div className="bg-white border border-slate-200 p-12 text-center rounded-2xl">
+              <p className="text-slate-500 text-sm">No news stories matching your search keywords or filter.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredNews.map(news => (
-                <NewsCard key={news.id} news={news} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {filteredNews.map((item) => (
+                <NewsCard key={item.id} news={item} />
               ))}
             </div>
           )}
         </div>
 
-        {/* Sidebar Widgets: Top Stories & Trending News */}
+        {/* Sidebar: Top Stories & Trending */}
         <div className="space-y-6">
           
-          {/* Top Stories Widget */}
-          <div className="sidebar-widget glass-panel p-5">
-            <div className="widget-header flex items-center gap-2 mb-4 pb-2 border-b border-glass">
-              <Award size={18} className="text-cyan" />
-              <h4 className="font-bold text-base">Top Stories</h4>
+          {/* Top Stories Panel */}
+          <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+            <div className="flex items-center gap-2 mb-4 pb-2 border-b border-slate-100">
+              <Award size={18} className="text-blue-600" />
+              <h3 className="font-bold text-base text-slate-900">Top Stories</h3>
             </div>
 
             <div className="space-y-4">
-              {topStories.map(story => (
-                <div key={story.id} className="top-story-item">
-                  <span className="badge badge-outline text-xs mb-1">{story.categoryName}</span>
-                  <h5 className="font-bold text-sm leading-snug hover:text-cyan transition mb-1">
-                    <Link to={`/news/${story.slug || story.id}`}>{story.title}</Link>
-                  </h5>
-                  <span className="text-xs text-muted flex items-center gap-1">
-                    <Clock size={11} /> {story.publishedAt ? new Date(story.publishedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently'}
-                  </span>
+              {topStories.slice(0, 4).map((story, idx) => (
+                <div key={story.id} className="group">
+                  <div className="flex gap-3">
+                    <span className="font-extrabold text-slate-300 text-lg group-hover:text-blue-600 transition">0{idx + 1}</span>
+                    <div>
+                      <span className="badge badge-primary text-[10px] mb-1">{story.categoryName}</span>
+                      <h4 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition line-clamp-2 leading-snug">
+                        <Link to={`/news/${story.slug || story.id}`}>{story.title}</Link>
+                      </h4>
+                      <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                        <Clock size={11} /> {story.viewsCount || 0} reads
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Trending News Widget */}
-          <div className="sidebar-widget glass-panel p-5">
-            <div className="widget-header flex items-center gap-2 mb-4 pb-2 border-b border-glass">
-              <Flame size={18} className="text-pink" />
-              <h4 className="font-bold text-base">Trending News</h4>
+          {/* Trending News Panel */}
+          <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+            <div className="flex items-center gap-2 mb-4 pb-2 border-b border-slate-100">
+              <Flame size={18} className="text-amber-500" />
+              <h3 className="font-bold text-base text-slate-900">Trending Now</h3>
             </div>
 
-            <div className="space-y-4">
-              {trendingNews.map(item => (
-                <div key={item.id} className="trending-news-item flex gap-3 items-center">
-                  <div className="trending-num font-black text-2xl text-pink opacity-80">
-                    #{trendingNews.indexOf(item) + 1}
-                  </div>
-                  <div>
-                    <h5 className="font-semibold text-sm leading-snug hover:text-pink transition">
-                      <Link to={`/news/${item.slug || item.id}`}>{item.title}</Link>
-                    </h5>
-                    <span className="text-xs text-muted">{item.viewsCount} views</span>
-                  </div>
+            <div className="space-y-3">
+              {trendingNews.slice(0, 3).map((item) => (
+                <div key={item.id} className="p-3 bg-slate-50 border border-slate-100 rounded-xl hover:bg-white hover:border-slate-300 transition">
+                  <span className="text-[11px] font-bold text-blue-600 uppercase">{item.categoryName}</span>
+                  <h4 className="font-bold text-sm text-slate-900 line-clamp-2 hover:text-blue-600 transition">
+                    <Link to={`/news/${item.slug || item.id}`}>{item.title}</Link>
+                  </h4>
                 </div>
               ))}
             </div>

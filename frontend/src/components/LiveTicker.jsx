@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Radio, Zap, ChevronRight, X } from 'lucide-react';
+import { Radio, X } from 'lucide-react';
 import { MOCK_TICKER_ITEMS } from '../mockData';
 
 export const LiveTicker = () => {
@@ -21,14 +21,14 @@ export const LiveTicker = () => {
     <div className="live-ticker-bar">
       <div className="live-ticker-container">
         <div className="live-badge">
-          <Radio size={14} className="animate-pulse" />
+          <Radio size={13} className="animate-pulse" />
           <span>LIVE UPDATES</span>
         </div>
         <div className="ticker-content">
           <span className="ticker-tag">{currentItem.tag}</span>
           <span className="ticker-text">{currentItem.text}</span>
         </div>
-        <button className="ticker-close" onClick={() => setVisible(false)} title="Dismiss Ticker">
+        <button className="ticker-close" onClick={() => setVisible(false)} title="Dismiss Ticker" aria-label="Dismiss">
           <X size={14} />
         </button>
       </div>

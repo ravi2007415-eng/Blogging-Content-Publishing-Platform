@@ -5,19 +5,19 @@
    ========================================================= */
 
 .wpc-shell {
-  --wpc-blue: #3858e9;
-  --wpc-blue-dark: #2b46c7;
-  --wpc-blue-tint: #f0f1ff;
+  --wpc-blue: #0b5ed7;
+  --wpc-blue-dark: #0757c9;
+  --wpc-blue-tint: #ebf3ff;
   --wpc-sidebar-bg: #ffffff;
-  --wpc-content-bg: #f6f7f7;
+  --wpc-content-bg: #f4f8ff;
   --wpc-card-bg: #ffffff;
-  --wpc-border: #e2e4e7;
-  --wpc-text: #1e1e1e;
-  --wpc-text-muted: #646970;
-  --wpc-green: #00a32a;
-  --wpc-pink: #d63384;
-  --wpc-radius: 8px;
-  --wpc-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --wpc-border: #dce6f5;
+  --wpc-text: #172033;
+  --wpc-text-muted: #667085;
+  --wpc-green: #059669;
+  --wpc-pink: #0284c7;
+  --wpc-radius: 10px;
+  --wpc-shadow: 0 1px 3px rgba(11, 94, 215, 0.05), 0 1px 2px rgba(23, 32, 51, 0.03);
 
   display: flex;
   align-items: stretch;

@@ -3,13 +3,13 @@ import { AuthContext } from '../context/AuthContext';
 import { CategoryContext } from '../context/CategoryContext';
 import { BlogCard } from '../components/BlogCard';
 import { MOCK_BLOGS } from '../mockData';
-import { User, Bookmark, Bell, Layers, Check, Sparkles, Heart } from 'lucide-react';
+import { Bookmark, Layers, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const UserDashboardPage = () => {
   const { user } = useContext(AuthContext);
   const { categories } = useContext(CategoryContext);
-  const [followedCats, setFollowedCats] = useState(['Sports', 'Technology', 'Events']);
+  const [followedCats, setFollowedCats] = useState(['Sports', 'Technology', 'Events', 'AI & Machine Learning']);
 
   const toggleFollow = (catName) => {
     setFollowedCats(prev => 
@@ -22,32 +22,36 @@ export const UserDashboardPage = () => {
   );
 
   return (
-    <div className="page-container user-dashboard-page">
+    <div className="page-container user-dashboard-page space-y-6">
       
       {/* Hero Header */}
-      <div className="user-hero-panel glass-panel mb-6">
-        <div className="user-profile-row flex items-center gap-4">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 shadow-sm">
+        <div className="flex items-center gap-4">
           <img
             src={user?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'}
             alt={user?.name || 'User'}
-            className="avatar-xl"
+            className="w-16 h-16 rounded-full object-cover border-2 border-slate-200"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80';
+            }}
           />
           <div>
-            <span className="badge badge-cyan text-xs mb-1">{user?.role || 'READER'}</span>
-            <h1 className="hero-title">{user?.name || 'Alex Rivera'}</h1>
-            <p className="text-sm text-muted">{user?.email || 'user@keryx.dev'}</p>
+            <span className="badge badge-primary text-xs mb-1">{user?.role || 'READER'}</span>
+            <h1 className="text-2xl font-extrabold text-slate-900">{user?.name || 'Alex Rivera'}</h1>
+            <p className="text-xs text-slate-500">{user?.email || 'user@keryx.dev'}</p>
           </div>
         </div>
       </div>
 
       {/* Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         
         {/* Left Column: Personalized Feed */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="section-header flex justify-between items-center">
-            <h2 className="section-title flex items-center gap-2">
-              <Sparkles size={20} className="text-cyan" />
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <Sparkles size={18} className="text-blue-600" />
               <span>Personalized Feed ({personalizedPosts.length})</span>
             </h2>
           </div>
@@ -59,23 +63,23 @@ export const UserDashboardPage = () => {
           </div>
         </div>
 
-        {/* Right Column: Followed Categories & Sub-Categories */}
+        {/* Right Column: Followed Categories & Quick Links */}
         <div className="space-y-6">
-          <div className="user-card glass-panel">
-            <h3 className="card-title flex items-center gap-2 mb-3">
-              <Layers size={18} className="text-pink" />
-              <span>Follow Categories</span>
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <h3 className="font-bold text-base text-slate-900 flex items-center gap-2 mb-2">
+              <Layers size={16} className="text-blue-600" />
+              <span>Follow Channels</span>
             </h3>
-            <p className="text-xs text-muted mb-4">
-              Select topics to customize your home feed updates and event notifications.
+            <p className="text-xs text-slate-500 mb-4">
+              Select channels to customize your home feed and event notifications.
             </p>
 
             <div className="space-y-2">
-              {categories.map(cat => {
+              {categories.slice(0, 8).map(cat => {
                 const isFollowed = followedCats.includes(cat.name);
                 return (
-                  <div key={cat.id} className="flex justify-between items-center p-2 rounded-lg glass-panel">
-                    <span className="text-sm font-semibold">{cat.name}</span>
+                  <div key={cat.id} className="flex justify-between items-center p-2.5 rounded-lg border border-slate-100 bg-slate-50 hover:bg-white hover:border-slate-300 transition">
+                    <span className="text-xs font-semibold text-slate-800">{cat.name}</span>
                     <button
                       onClick={() => toggleFollow(cat.name)}
                       className={`btn btn-xs ${isFollowed ? 'btn-primary' : 'btn-outline'}`}
@@ -88,16 +92,16 @@ export const UserDashboardPage = () => {
             </div>
           </div>
 
-          <div className="user-card glass-panel">
-            <h3 className="card-title flex items-center gap-2 mb-3">
-              <Bookmark size={18} className="text-yellow" />
-              <span>Quick Links</span>
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <h3 className="font-bold text-base text-slate-900 flex items-center gap-2 mb-3">
+              <Bookmark size={16} className="text-blue-600" />
+              <span>Quick Shortcuts</span>
             </h3>
             <div className="space-y-2">
-              <Link to="/bookmarks" className="btn btn-outline w-full text-center">
+              <Link to="/bookmarks" className="btn btn-outline w-full text-center text-xs justify-center">
                 View Saved Bookmarks
               </Link>
-              <Link to="/events" className="btn btn-secondary w-full text-center">
+              <Link to="/events" className="btn btn-secondary w-full text-center text-xs justify-center">
                 Explore Upcoming Events
               </Link>
             </div>

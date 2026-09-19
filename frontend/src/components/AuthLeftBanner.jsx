@@ -7,32 +7,26 @@ import {
   TrendingUp, 
   Sparkles, 
   Eye, 
-  Heart, 
-  Bookmark,
-  CheckCircle2
+  Heart 
 } from 'lucide-react';
 
 export const AuthLeftBanner = () => {
   return (
     <div className="split-auth-left">
-      {/* Ambient background glow effects */}
-      <div className="auth-ambient-glow auth-glow-1"></div>
-      <div className="auth-ambient-glow auth-glow-2"></div>
-
       <div className="split-left-content">
         {/* Top Logo */}
         <Link to="/" className="split-brand-header">
-          <div className="speed-logo-wrapper split-logo-badge">
-            <SpeedMonogram size={26} />
+          <div className="split-logo-badge">
+            <SpeedMonogram size={22} />
           </div>
           <span className="split-brand-name">KERYX</span>
         </Link>
 
         {/* Hero Section */}
-        <div className="split-hero-section">
+        <div className="mb-6">
           <div className="split-badge-pill">
-            <Sparkles size={13} className="pill-sparkle" />
-            <span>A BLOGGING PLATFORM FOR EVERYONE</span>
+            <Sparkles size={12} />
+            <span>DIGITAL PUBLISHING PLATFORM</span>
           </div>
 
           <h1 className="split-main-headline">
@@ -40,15 +34,15 @@ export const AuthLeftBanner = () => {
           </h1>
 
           <p className="split-subtitle">
-            Write. Publish. Inspire. Join a global community of creators, engineers, readers, and thinkers.
+            Write. Publish. Inspire. Join a global community of engineers, creators, researchers, and thinkers.
           </p>
         </div>
 
         {/* Feature List */}
-        <div className="split-features-list">
+        <div className="space-y-4 mb-8">
           <div className="split-feature-item">
             <div className="feature-icon-wrapper">
-              <PenTool size={18} />
+              <PenTool size={16} />
             </div>
             <div className="feature-text-group">
               <h4>Create & Publish</h4>
@@ -58,56 +52,51 @@ export const AuthLeftBanner = () => {
 
           <div className="split-feature-item">
             <div className="feature-icon-wrapper">
-              <Users size={18} />
+              <Users size={16} />
             </div>
             <div className="feature-text-group">
-              <h4>Join a Community</h4>
-              <p>Engage in meaningful discussions, leave thoughts, and collaborate with peers.</p>
+              <h4>Engage Community</h4>
+              <p>Connect directly with readers through real-time notifications and discussions.</p>
             </div>
           </div>
 
           <div className="split-feature-item">
             <div className="feature-icon-wrapper">
-              <TrendingUp size={18} />
+              <TrendingUp size={16} />
             </div>
             <div className="feature-text-group">
-              <h4>Grow Your Audience</h4>
-              <p>Built-in SEO tools, newsletter distribution, and real-time readership analytics.</p>
+              <h4>Readership Analytics</h4>
+              <p>Track article reads, views, and engagement metrics seamlessly.</p>
             </div>
           </div>
         </div>
 
-        {/* Elegant Preview Card at the bottom */}
-        <div className="split-bottom-preview-card">
-          <div className="preview-card-header">
-            <div className="preview-author-avatar">
+        {/* Elegant Preview Card */}
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2.5">
               <img 
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" 
                 alt="Elena Vance" 
+                className="w-7 h-7 rounded-full object-cover border border-slate-200"
               />
+              <div className="text-xs">
+                <span className="font-bold text-slate-800 block">Elena Vance</span>
+                <span className="text-[11px] text-slate-400">Staff Engineer • 5 min read</span>
+              </div>
             </div>
-            <div className="preview-author-meta">
-              <h5>Elena Vance</h5>
-              <span>Staff Engineer • 5 min read</span>
-            </div>
-            <div className="preview-live-pill">
-              <span className="live-dot"></span>
-              <span>Trending</span>
-            </div>
+            <span className="badge badge-primary text-[10px]">Trending</span>
           </div>
 
-          <p className="preview-article-title">
+          <p className="text-xs font-semibold text-slate-800 line-clamp-2 mb-3 leading-snug">
             Architecting High-Throughput Event Streams in Modern Cloud Runtimes
           </p>
 
-          <div className="preview-card-footer">
-            <div className="preview-tags">
-              <span className="preview-tag">#DistributedSystems</span>
-              <span className="preview-tag">#Architecture</span>
-            </div>
-            <div className="preview-metrics">
-              <span><Eye size={13} /> 3.4k</span>
-              <span><Heart size={13} /> 482</span>
+          <div className="flex justify-between items-center text-[11px] text-slate-400 pt-2 border-t border-slate-100">
+            <span className="text-blue-600 font-semibold">#CloudArchitecture</span>
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1"><Eye size={12} /> 3.4k</span>
+              <span className="flex items-center gap-1"><Heart size={12} className="text-rose-500" /> 482</span>
             </div>
           </div>
         </div>
@@ -116,3 +105,5 @@ export const AuthLeftBanner = () => {
     </div>
   );
 };
+
+export default AuthLeftBanner;

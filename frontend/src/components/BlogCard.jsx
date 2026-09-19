@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, MessageSquare, Bookmark, Clock, ArrowUpRight } from 'lucide-react';
+import { Heart, MessageSquare, Bookmark, Clock, ArrowUpRight, Image as ImageIcon } from 'lucide-react';
 import { formatDate, calculateReadTime } from '../utils/helpers';
 
 export const BlogCard = ({ blog, onToggleLike, onToggleBookmark }) => {
   const [liked, setLiked] = useState(blog.isLiked || false);
   const [likesCount, setLikesCount] = useState(blog.likesCount || 0);
   const [bookmarked, setBookmarked] = useState(blog.isBookmarked || false);
+  const [imgError, setImgError] = useState(false);
 
   const handleLikeClick = (e) => {
     e.preventDefault();
@@ -22,103 +23,92 @@ export const BlogCard = ({ blog, onToggleLike, onToggleBookmark }) => {
     setBookmarked(!bookmarked);
     if (onToggleBookmark) onToggleBookmark(blog.id);
   };
-  const getCategoryThemeClass = (slug) => {
-    if (!slug) return 'theme-indigo';
-    switch (slug.toLowerCase()) {
-      case 'technology':
-      case 'software':
-        return 'theme-blue';
-      case 'ai-ml':
-      case 'artificial-intelligence':
-      case 'ai':
-        return 'theme-purple';
-      case 'cloud':
-      case 'devops-cloud':
-        return 'theme-cyan';
-      case 'programming':
-      case 'software-engineering':
-        return 'theme-yellow';
-      case 'business':
-      case 'career':
-      case 'startups':
-        return 'theme-orange';
-      case 'education':
-      case 'sports':
-        return 'theme-red';
-      default:
-        return 'theme-indigo';
-    }
-  };
 
-  const themeClass = getCategoryThemeClass(blog.category?.slug);
+  const hasImage = Boolean(blog.coverImage) && !imgError;
 
   return (
-    <article className={`glass-card blog-card ${themeClass}`}>
-      {/* Article Cover Header */}
-      {blog.coverImage && (
-        <div className="card-image-wrapper">
-          <Link to={`/blog/${blog.slug || blog.id}`}>
-            <img src={blog.coverImage} alt={blog.title} className="card-image" />
-          </Link>
-          {blog.category && (
-            <span className="card-category-badge badge badge-primary">
+    <article className="blog-card">
+      {/* 1. Article Image (Fixed 195px Medium Height with Fallback) */}
+      <div className="card-image-wrapper">
+        <Link to={`/blog/${blog.slug || blog.id}`} className="card-image-link" tabIndex={-1} aria-label={blog.title}>
+          {hasImage ? (
+            <img 
+              src={blog.coverImage} 
+              alt={blog.title} 
+              className="card-image"
+              loading="lazy"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className="card-image-placeholder">
+              <ImageIcon size={28} className="text-muted opacity-60" />
+              <span className="placeholder-text">No image available</span>
+            </div>
+          )}
+        </Link>
+      </div>
+
+      {/* Card Body */}
+      <div className="card-content">
+        {/* 2. Category Badge */}
+        {blog.category && (
+          <div className="card-badge-row">
+            <span className="card-category-pill">
               {blog.category.name}
             </span>
-          )}
-        </div>
-      )}
-
-      <div className="card-content">
-        {/* Author Header */}
-        <div className="author-meta">
-          <img
-            src={blog.author?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
-            alt={blog.author?.name || 'Author'}
-            className="author-avatar"
-          />
-          <div className="author-info">
-            <span className="author-name">{blog.author?.name || 'Anonymous Developer'}</span>
-            <span className="post-date">{formatDate(blog.createdAt)}</span>
-          </div>
-          <span className="read-time-pill">
-            <Clock size={12} />
-            {blog.readTime || calculateReadTime(blog.content)}
-          </span>
-        </div>
-
-        {/* Title & Excerpt */}
-        <h3 className="card-title">
-          <Link to={`/blog/${blog.slug || blog.id}`}>
-            {blog.title}
-            <ArrowUpRight size={18} className="title-arrow" />
-          </Link>
-        </h3>
-        <p className="card-summary">{blog.summary}</p>
-
-        {/* Tags list */}
-        {blog.tags && blog.tags.length > 0 && (
-          <div className="tags-list">
-            {blog.tags.map((tag, idx) => (
-              <span key={idx} className="tag-pill">
-                #{tag.name || tag}
-              </span>
-            ))}
           </div>
         )}
 
-        {/* Footer Actions */}
+        {/* 3. Title (Max 2 lines) */}
+        <h3 className="card-title">
+          <Link to={`/blog/${blog.slug || blog.id}`} title={blog.title}>
+            <span>{blog.title}</span>
+            <ArrowUpRight size={15} className="title-arrow" />
+          </Link>
+        </h3>
+
+        {/* 4. Short Description / Excerpt (Max 2 lines) */}
+        <p className="card-summary">{blog.summary}</p>
+
+        {/* 5. Author & Reading Time Row */}
+        <div className="card-author-row">
+          <div className="author-meta">
+            <img
+              src={blog.author?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
+              alt={blog.author?.name || 'Author'}
+              className="author-avatar"
+              loading="lazy"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80';
+              }}
+            />
+            <div className="author-info">
+              <span className="author-name">{blog.author?.name || 'Anonymous Creator'}</span>
+              <span className="post-date">{formatDate(blog.createdAt)}</span>
+            </div>
+          </div>
+          <span className="read-time-pill">
+            <Clock size={12} />
+            <span>{blog.readTime || calculateReadTime(blog.content)}</span>
+          </span>
+        </div>
+
+        {/* 6. Footer Interactive Actions */}
         <div className="card-footer">
           <div className="action-stats">
             <button
               onClick={handleLikeClick}
               className={`action-btn ${liked ? 'liked' : ''}`}
               title="Like post"
+              type="button"
+              aria-label="Like post"
             >
-              <Heart size={18} fill={liked ? 'currentColor' : 'none'} />
+              <Heart size={15} fill={liked ? 'currentColor' : 'none'} />
               <span>{likesCount}</span>
             </button>
-            <Link to={`/blog/${blog.slug || blog.id}#comments`} className="action-btn">
-              <MessageSquare size={18} />
+            <Link to={`/blog/${blog.slug || blog.id}#comments`} className="action-btn" title="Comments" aria-label="Comments">
+              <MessageSquare size={15} />
               <span>{blog.commentsCount || 0}</span>
             </Link>
           </div>
@@ -127,11 +117,15 @@ export const BlogCard = ({ blog, onToggleLike, onToggleBookmark }) => {
             onClick={handleBookmarkClick}
             className={`action-btn bookmark-btn ${bookmarked ? 'bookmarked' : ''}`}
             title={bookmarked ? 'Remove bookmark' : 'Bookmark post'}
+            type="button"
+            aria-label="Bookmark"
           >
-            <Bookmark size={18} fill={bookmarked ? 'currentColor' : 'none'} />
+            <Bookmark size={15} fill={bookmarked ? 'currentColor' : 'none'} />
           </button>
         </div>
       </div>
     </article>
   );
 };
+
+export default BlogCard;
