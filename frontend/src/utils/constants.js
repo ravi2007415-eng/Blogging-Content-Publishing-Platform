@@ -1,6 +1,6 @@
 export const API_BASE_URL =
-  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL) ||
-  'https://blogging-content-publishing-platform-production.up.railway.app/api/v1';
+  import.meta.env.VITE_API_URL ||
+  'https://considerate-strength-production-8972.up.railway.app';
 
 export const ROLES = {
   USER: 'ROLE_USER',
