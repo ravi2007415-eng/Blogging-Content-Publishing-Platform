@@ -14,6 +14,29 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@CrossOrigin(
+    origins = {
+        "https://considerate-strength-production-8972.up.railway.app",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    },
+    originPatterns = {
+        "https://*.up.railway.app",
+        "*"
+    },
+    allowedHeaders = "*",
+    methods = {
+        RequestMethod.GET,
+        RequestMethod.POST,
+        RequestMethod.PUT,
+        RequestMethod.PATCH,
+        RequestMethod.DELETE,
+        RequestMethod.OPTIONS,
+        RequestMethod.HEAD
+    },
+    allowCredentials = "true",
+    maxAge = 3600
+)
 public class AuthController {
 
     private final AuthService authService;

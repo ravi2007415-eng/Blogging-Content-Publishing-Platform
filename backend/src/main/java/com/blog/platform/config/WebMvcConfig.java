@@ -35,9 +35,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         }
 
         registry.addMapping("/**")
-                .allowedOriginPatterns(origins.toArray(new String[0]))
+                .allowedOrigins(origins.toArray(new String[0]))
+                .allowedOriginPatterns("https://*.up.railway.app", "*")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD")
-                .allowedHeaders("Authorization", "Content-Type", "Accept", "X-Requested-With", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers")
+                .allowedHeaders("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With", "Access-Control-Request-Method", "Access-Control-Request-Headers", "*")
                 .exposedHeaders("Authorization", "Content-Disposition", "Link", "X-Total-Count")
                 .allowCredentials(true)
                 .maxAge(3600L);

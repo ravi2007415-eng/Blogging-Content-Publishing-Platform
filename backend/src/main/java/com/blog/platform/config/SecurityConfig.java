@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,7 +56,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .cors(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
             .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -94,16 +95,25 @@ public class SecurityConfig {
             origins.add("http://127.0.0.1:5173");
         }
 
-        configuration.setAllowedOriginPatterns(origins);
+        // Support exact origins as well as origin patterns
+        configuration.setAllowedOrigins(origins);
+        configuration.setAllowedOriginPatterns(List.of(
+            "https://considerate-strength-production-8972.up.railway.app",
+            "https://*.up.railway.app",
+            "http://localhost:[*]",
+            "http://127.0.0.1:[*]",
+            "*"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList(
             "Authorization",
             "Content-Type",
             "Accept",
-            "X-Requested-With",
             "Origin",
+            "X-Requested-With",
             "Access-Control-Request-Method",
-            "Access-Control-Request-Headers"
+            "Access-Control-Request-Headers",
+            "*"
         ));
         configuration.setExposedHeaders(Arrays.asList(
             "Authorization",
@@ -120,8 +130,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public FilterRegistrationBean<CorsFilter> corsFilterRegistrationBean() {
-        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(corsConfigurationSource()));
+    public FilterRegistrationBean<CorsFilter> corsFilterRegistrationBean(CorsConfigurationSource corsConfigurationSource) {
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(corsConfigurationSource));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
     }
