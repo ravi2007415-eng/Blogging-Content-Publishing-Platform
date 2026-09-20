@@ -1,6 +1,9 @@
-export const API_BASE_URL =
-  import.meta.env.VITE_API_URL ||
+const rawUrl =
+  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL) ||
   'https://blogging-content-publishing-platform-production.up.railway.app/api/v1';
+
+const cleanUrl = rawUrl.replace(/\/+$/, '');
+export const API_BASE_URL = cleanUrl.endsWith('/api/v1') ? cleanUrl : `${cleanUrl}/api/v1`;
 
 export const ROLES = {
   USER: 'ROLE_USER',

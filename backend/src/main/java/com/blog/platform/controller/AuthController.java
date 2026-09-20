@@ -13,7 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping({"/api/v1/auth", "/auth"})
 @CrossOrigin(
     origins = {
         "https://considerate-strength-production-8972.up.railway.app",

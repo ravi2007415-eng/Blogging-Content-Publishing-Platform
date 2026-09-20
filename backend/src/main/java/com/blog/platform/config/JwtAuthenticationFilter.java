@@ -34,6 +34,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        String path = request.getRequestURI();
+        if (path != null && (path.startsWith("/api/v1/auth/") || path.startsWith("/auth/"))) {
+            // Public auth endpoints (register, login, google) do not require JWT validation
+            // If Authorization header is absent, bypass immediately
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
