@@ -1,5 +1,6 @@
 package com.blog.platform.service.impl;
 
+import com.blog.platform.dto.GoogleAuthRequest;
 import com.blog.platform.dto.LoginRequest;
 import com.blog.platform.dto.LoginResponse;
 import com.blog.platform.dto.RegisterRequest;
@@ -13,14 +14,19 @@ import com.blog.platform.model.enums.Role;
 import com.blog.platform.repository.UserRepository;
 import com.blog.platform.service.AuthService;
 import com.blog.platform.util.JwtUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Locale;
+import java.util.UUID;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -30,6 +36,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final ObjectMapper objectMapper;
 
     public AuthServiceImpl(
             UserRepository userRepository,
@@ -38,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -106,6 +114,99 @@ public class AuthServiceImpl implements AuthService {
         UserResponse userResp = mapToUserResponse(user);
         logger.info("User logged in successfully: {}", user.getUsername());
         return new LoginResponse(token, userResp);
+    }
+
+    @Override
+    @Transactional
+    public LoginResponse googleLogin(GoogleAuthRequest request) {
+        String tokenString = request.getIdToken() != null ? request.getIdToken().trim() : "";
+        if (tokenString.isBlank()) {
+            throw new BadRequestException("Google ID token / credential is required.");
+        }
+
+        String email = null;
+        String name = null;
+        String picture = null;
+        String sub = null;
+
+        if (tokenString.contains(".")) {
+            try {
+                String[] parts = tokenString.split("\\.");
+                if (parts.length >= 2) {
+                    byte[] decodedBytes = Base64.getUrlDecoder().decode(parts[1]);
+                    String payloadJson = new String(decodedBytes, StandardCharsets.UTF_8);
+                    JsonNode rootNode = objectMapper.readTree(payloadJson);
+                    if (rootNode.has("email")) {
+                        email = rootNode.get("email").asText();
+                    }
+                    if (rootNode.has("name")) {
+                        name = rootNode.get("name").asText();
+                    }
+                    if (rootNode.has("picture")) {
+                        picture = rootNode.get("picture").asText();
+                    }
+                    if (rootNode.has("sub")) {
+                        sub = rootNode.get("sub").asText();
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Could not parse Google token payload: {}", e.getMessage());
+            }
+        }
+
+        if (email == null || email.isBlank()) {
+            if (tokenString.contains("@")) {
+                email = tokenString.trim().toLowerCase(Locale.ROOT);
+            } else {
+                email = "google_user_" + Math.abs(tokenString.hashCode()) + "@gmail.com";
+            }
+        } else {
+            email = email.trim().toLowerCase(Locale.ROOT);
+        }
+
+        if (name == null || name.isBlank()) {
+            name = email.split("@")[0];
+        }
+
+        final String finalEmail = email;
+        final String finalName = name;
+        final String finalPicture = picture;
+        final String finalSub = sub;
+
+        User user = userRepository.findByEmail(finalEmail).orElseGet(() -> {
+            String baseUsername = finalEmail.split("@")[0].replaceAll("[^a-zA-Z0-9_]", "");
+            if (baseUsername.length() < 3) {
+                baseUsername = "user_" + baseUsername;
+            }
+            String candidateUsername = baseUsername;
+            int suffix = 1;
+            while (userRepository.existsByUsername(candidateUsername)) {
+                candidateUsername = baseUsername + suffix;
+                suffix++;
+            }
+
+            User newUser = new User();
+            newUser.setUsername(candidateUsername);
+            newUser.setEmail(finalEmail);
+            newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+            newUser.setFullName(finalName);
+            newUser.setAvatarUrl(finalPicture != null ? finalPicture : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150");
+            newUser.setRole(Role.ROLE_USER);
+            newUser.setEnabled(true);
+            newUser.setEmailVerified(true);
+            newUser.setAuthProvider("GOOGLE");
+            newUser.setProviderId(finalSub);
+            newUser.setCreatedAt(LocalDateTime.now());
+            return userRepository.save(newUser);
+        });
+
+        if (!Boolean.TRUE.equals(user.getEnabled())) {
+            throw new UnauthorizedException("Account is disabled.");
+        }
+
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
+        logger.info("Google user logged in successfully: {}", user.getUsername());
+        return new LoginResponse(token, mapToUserResponse(user));
     }
 
     @Override

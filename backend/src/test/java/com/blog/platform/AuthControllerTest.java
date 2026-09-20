@@ -57,13 +57,37 @@ class AuthControllerTest {
     }
 
     @Test
+    void testCorsPreflightOnRegisterProductionOrigin() throws Exception {
+        mockMvc.perform(options("/api/v1/auth/register")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
+                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST")
+                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "authorization,content-type"))
+                .andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, containsString("POST")));
+    }
+
+    @Test
+    void testCorsPreflightOnGoogleAuthProductionOrigin() throws Exception {
+        mockMvc.perform(options("/api/v1/auth/google")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
+                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST")
+                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "authorization,content-type"))
+                .andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, containsString("POST")));
+    }
+
+    @Test
     void testCorsPreflightOnMe() throws Exception {
         mockMvc.perform(options("/api/v1/auth/me")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
                 .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET")
                 .header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "authorization"))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
                 .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"));
     }
 
@@ -72,11 +96,11 @@ class AuthControllerTest {
         LoginRequest loginRequest = new LoginRequest("admin@blogplatform.com", "password123");
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/login")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
                 .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"))
                 .andExpect(jsonPath("$.token").isNotEmpty())
                 .andExpect(jsonPath("$.user.username").value("admin"))
@@ -86,12 +110,12 @@ class AuthControllerTest {
         LoginResponse response = objectMapper.readValue(responseJson, LoginResponse.class);
         assertNotNull(response.getToken());
 
-        // Test /api/v1/auth/me with the acquired JWT token
+        // Test /api/v1/auth/me with the acquired JWT token and production origin
         mockMvc.perform(get("/api/v1/auth/me")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + response.getToken()))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
                 .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"))
                 .andExpect(jsonPath("$.username").value("admin"))
                 .andExpect(jsonPath("$.email").value("admin@blogplatform.com"));
@@ -102,35 +126,36 @@ class AuthControllerTest {
         LoginRequest loginRequest = new LoginRequest("author@blogplatform.com", "password123");
 
         mockMvc.perform(post("/api/v1/auth/login")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
                 .andExpect(jsonPath("$.user.username").value("tech_guru"));
     }
 
     @Test
     void testGetMeWithoutTokenReturnsUnauthorizedWithCorsHeaders() throws Exception {
         mockMvc.perform(get("/api/v1/auth/me")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173"))
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
                 .andExpect(status().isUnauthorized())
-                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
                 .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"));
     }
 
     @Test
-    void testDirectRegistrationSuccess() throws Exception {
+    void testDirectRegistrationSuccessWithProductionCors() throws Exception {
         String uniqueUser = "newuser_" + System.currentTimeMillis();
         String uniqueEmail = uniqueUser + "@example.com";
         RegisterRequest registerRequest = new RegisterRequest(uniqueUser, uniqueEmail, "password123", "New Test User");
 
         mockMvc.perform(post("/api/v1/auth/register")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"))
                 .andExpect(jsonPath("$.username").value(uniqueUser))
                 .andExpect(jsonPath("$.email").value(uniqueEmail))
                 .andExpect(jsonPath("$.fullName").value("New Test User"))
@@ -140,12 +165,28 @@ class AuthControllerTest {
         // Now test login with this newly registered user
         LoginRequest loginRequest = new LoginRequest(uniqueEmail, "password123");
         mockMvc.perform(post("/api/v1/auth/login")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
                 .andExpect(jsonPath("$.token").isNotEmpty())
                 .andExpect(jsonPath("$.user.username").value(uniqueUser));
+    }
+
+    @Test
+    void testGoogleAuthSuccessWithProductionCors() throws Exception {
+        com.blog.platform.dto.GoogleAuthRequest googleAuth = new com.blog.platform.dto.GoogleAuthRequest("mock_google_token_" + System.currentTimeMillis() + "@gmail.com");
+
+        mockMvc.perform(post("/api/v1/auth/google")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(googleAuth)))
+                .andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"))
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.user.email").isNotEmpty());
     }
 
     @Test
@@ -153,10 +194,11 @@ class AuthControllerTest {
         RegisterRequest registerRequest = new RegisterRequest("admin", "brandnewunique@example.com", "password123", "Admin Dupe");
 
         mockMvc.perform(post("/api/v1/auth/register")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isConflict())
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
                 .andExpect(jsonPath("$.message").value("Username is already taken."));
     }
 
@@ -165,10 +207,11 @@ class AuthControllerTest {
         RegisterRequest registerRequest = new RegisterRequest("uniqueuser_" + System.currentTimeMillis(), "admin@blogplatform.com", "password123", "Admin Email Dupe");
 
         mockMvc.perform(post("/api/v1/auth/register")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isConflict())
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
                 .andExpect(jsonPath("$.message").value("This email is already registered. Please log in."));
     }
 
@@ -177,10 +220,11 @@ class AuthControllerTest {
         LoginRequest loginRequest = new LoginRequest("admin@blogplatform.com", "wrongpassword");
 
         mockMvc.perform(post("/api/v1/auth/login")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ORIGIN, "https://considerate-strength-production-8972.up.railway.app")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isUnauthorized())
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "https://considerate-strength-production-8972.up.railway.app"))
                 .andExpect(jsonPath("$.message").value("Invalid username/email or password."));
     }
 }

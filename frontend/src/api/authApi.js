@@ -19,6 +19,13 @@ export const authApi = {
     const res = await axiosInstance.post('/auth/register', payload);
     return res.data;
   },
+  googleLogin: async (credentialOrToken) => {
+    const payload = typeof credentialOrToken === 'string'
+      ? { idToken: credentialOrToken }
+      : credentialOrToken;
+    const res = await axiosInstance.post('/auth/google', payload);
+    return res.data;
+  },
   getCurrentUser: async () => {
     const res = await axiosInstance.get('/auth/me');
     return res.data;

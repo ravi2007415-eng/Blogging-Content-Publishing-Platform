@@ -82,6 +82,9 @@ public class BloggingPlatformApplication {
                         } else if ("SMTP_FROM".equalsIgnoreCase(key) || "MAIL_FROM".equalsIgnoreCase(key) || "APP_MAIL_FROM".equalsIgnoreCase(key)) {
                             System.setProperty("MAIL_FROM", value);
                             System.setProperty("app.mail.from", value);
+                        } else if ("CORS_ALLOWED_ORIGINS".equalsIgnoreCase(key) || "APP_CORS_ALLOWED_ORIGINS".equalsIgnoreCase(key)) {
+                            System.setProperty("CORS_ALLOWED_ORIGINS", value);
+                            System.setProperty("app.cors.allowed-origins", value);
                         }
                     }
                     logger.info("Loaded environment properties from: {}", path.toAbsolutePath());

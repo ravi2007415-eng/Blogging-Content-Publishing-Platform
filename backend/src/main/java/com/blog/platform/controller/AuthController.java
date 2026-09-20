@@ -1,5 +1,6 @@
 package com.blog.platform.controller;
 
+import com.blog.platform.dto.GoogleAuthRequest;
 import com.blog.platform.dto.LoginRequest;
 import com.blog.platform.dto.LoginResponse;
 import com.blog.platform.dto.RegisterRequest;
@@ -29,6 +30,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<LoginResponse> googleLogin(@Valid @RequestBody GoogleAuthRequest request) {
+        return ResponseEntity.ok(authService.googleLogin(request));
     }
 
     @GetMapping("/me")

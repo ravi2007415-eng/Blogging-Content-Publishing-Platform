@@ -1,5 +1,6 @@
 package com.blog.platform.service;
 
+import com.blog.platform.dto.GoogleAuthRequest;
 import com.blog.platform.dto.LoginRequest;
 import com.blog.platform.dto.LoginResponse;
 import com.blog.platform.dto.RegisterRequest;
@@ -9,5 +10,6 @@ public interface AuthService {
     LoginResponse login(LoginRequest request);
     UserResponse register(RegisterRequest request);
     UserResponse getCurrentUser(String username);
+    LoginResponse googleLogin(GoogleAuthRequest request);
 }
 
