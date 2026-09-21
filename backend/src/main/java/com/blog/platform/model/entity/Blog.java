@@ -36,13 +36,14 @@ public class Blog {
     @Column(name = "views_count")
     private Integer viewsCount = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
 
     @Column(name = "sub_category_name", length = 80)
     private String subCategoryName;

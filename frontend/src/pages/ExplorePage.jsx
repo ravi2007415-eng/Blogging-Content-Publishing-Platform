@@ -1,17 +1,33 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { CategoryContext } from '../context/CategoryContext';
+import { blogApi } from '../api/blogApi';
 import { MOCK_BLOGS } from '../mockData';
 import { BlogCard } from '../components/BlogCard';
 import { Layers, BookOpen } from 'lucide-react';
 
 export const ExplorePage = () => {
   const { categories } = useContext(CategoryContext);
+  const [blogsList, setBlogsList] = useState([]);
   const [activeCategory, setActiveCategory] = useState(categories[0]?.slug || 'technology');
 
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await blogApi.getBlogs(0, 100);
+        const data = res?.content || (Array.isArray(res) ? res : []);
+        setBlogsList(data.length > 0 ? data : MOCK_BLOGS);
+      } catch {
+        setBlogsList(MOCK_BLOGS);
+      }
+    };
+    fetchBlogs();
+  }, []);
+
   const activeCatObj = categories.find((c) => c.slug === activeCategory) || categories[0] || { name: 'Technology', slug: 'technology' };
-  const categoryBlogs = MOCK_BLOGS.filter(
-    (b) => b.category?.slug.toLowerCase() === activeCategory.toLowerCase() || b.category?.name.toLowerCase() === activeCatObj.name.toLowerCase()
+  const categoryBlogs = blogsList.filter(
+    (b) => b.category?.slug?.toLowerCase() === activeCategory.toLowerCase() || b.category?.name?.toLowerCase() === activeCatObj.name.toLowerCase()
   );
+
 
   return (
     <div className="explore-page-container space-y-8">

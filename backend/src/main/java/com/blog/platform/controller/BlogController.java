@@ -49,27 +49,28 @@ public class BlogController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('AUTHOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'AUTHOR', 'ADMIN')")
     public ResponseEntity<BlogResponse> createBlog(@Valid @RequestBody BlogRequest request, Authentication authentication) {
         return new ResponseEntity<>(blogService.createBlog(request, authentication.getName()), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('AUTHOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'AUTHOR', 'ADMIN')")
     public ResponseEntity<BlogResponse> updateBlog(@PathVariable Long id, @Valid @RequestBody BlogRequest request, Authentication authentication) {
         return ResponseEntity.ok(blogService.updateBlog(id, request, authentication.getName()));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('AUTHOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'AUTHOR', 'ADMIN')")
     public ResponseEntity<Void> deleteBlog(@PathVariable Long id, Authentication authentication) {
         blogService.deleteBlog(id, authentication.getName());
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/my-blogs")
-    @PreAuthorize("hasAnyRole('AUTHOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'AUTHOR', 'ADMIN')")
     public ResponseEntity<List<BlogResponse>> getMyBlogs(Authentication authentication) {
         return ResponseEntity.ok(blogService.getBlogsByAuthor(authentication.getName()));
     }
 }
+

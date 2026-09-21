@@ -24,16 +24,18 @@ export const BlogCard = ({ blog, onToggleLike, onToggleBookmark }) => {
     if (onToggleBookmark) onToggleBookmark(blog.id);
   };
 
-  const hasImage = Boolean(blog.coverImage) && !imgError;
+  const imageUrl = blog.coverImageUrl || blog.coverImage;
+  const hasImage = Boolean(imageUrl) && !imgError;
+  const authorName = blog.author?.fullName || blog.author?.name || blog.author?.username || 'Alex Rivera';
 
   return (
     <article className="blog-card">
-      {/* 1. Article Image (Fixed 195px Medium Height with Fallback) */}
+      {/* 1. Article Image */}
       <div className="card-image-wrapper">
         <Link to={`/blog/${blog.slug || blog.id}`} className="card-image-link" tabIndex={-1} aria-label={blog.title}>
           {hasImage ? (
             <img 
-              src={blog.coverImage} 
+              src={imageUrl} 
               alt={blog.title} 
               className="card-image"
               loading="lazy"
@@ -55,6 +57,9 @@ export const BlogCard = ({ blog, onToggleLike, onToggleBookmark }) => {
           <div className="card-badge-row">
             <span className="card-category-pill">
               {blog.category.name}
+              {blog.subCategoryName && blog.subCategoryName !== 'General' && (
+                <span className="opacity-75"> → {blog.subCategoryName}</span>
+              )}
             </span>
           </div>
         )}
@@ -75,7 +80,7 @@ export const BlogCard = ({ blog, onToggleLike, onToggleBookmark }) => {
           <div className="author-meta">
             <img
               src={blog.author?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
-              alt={blog.author?.name || 'Author'}
+              alt={authorName}
               className="author-avatar"
               loading="lazy"
               onError={(e) => {
@@ -84,7 +89,7 @@ export const BlogCard = ({ blog, onToggleLike, onToggleBookmark }) => {
               }}
             />
             <div className="author-info">
-              <span className="author-name">{blog.author?.name || 'Anonymous Creator'}</span>
+              <span className="author-name">{authorName}</span>
               <span className="post-date">{formatDate(blog.createdAt)}</span>
             </div>
           </div>
@@ -129,3 +134,4 @@ export const BlogCard = ({ blog, onToggleLike, onToggleBookmark }) => {
 };
 
 export default BlogCard;
+

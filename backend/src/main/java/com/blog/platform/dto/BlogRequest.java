@@ -2,13 +2,14 @@ package com.blog.platform.dto;
 
 import com.blog.platform.model.enums.BlogStatus;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
 public class BlogRequest {
 
     @NotBlank(message = "Title is required")
     private String title;
+
+    private String slug;
 
     private String summary;
 
@@ -17,17 +18,25 @@ public class BlogRequest {
 
     private String coverImageUrl;
 
-    @NotNull(message = "Category ID is required")
     private Long categoryId;
+
+    private String categorySlug;
+
+    private String categoryName;
+
+    private String subCategoryName;
 
     private Set<String> tagNames;
 
-    private BlogStatus status = BlogStatus.DRAFT;
+    private BlogStatus status = BlogStatus.PUBLISHED;
 
     public BlogRequest() {}
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+
+    public String getSlug() { return slug; }
+    public void setSlug(String slug) { this.slug = slug; }
 
     public String getSummary() { return summary; }
     public void setSummary(String summary) { this.summary = summary; }
@@ -41,9 +50,19 @@ public class BlogRequest {
     public Long getCategoryId() { return categoryId; }
     public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
 
+    public String getCategorySlug() { return categorySlug; }
+    public void setCategorySlug(String categorySlug) { this.categorySlug = categorySlug; }
+
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+
+    public String getSubCategoryName() { return subCategoryName; }
+    public void setSubCategoryName(String subCategoryName) { this.subCategoryName = subCategoryName; }
+
     public Set<String> getTagNames() { return tagNames; }
     public void setTagNames(Set<String> tagNames) { this.tagNames = tagNames; }
 
     public BlogStatus getStatus() { return status; }
     public void setStatus(BlogStatus status) { this.status = status; }
 }
+

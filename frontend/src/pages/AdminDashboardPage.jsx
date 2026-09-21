@@ -1,6 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { CategoryContext } from '../context/CategoryContext';
 import { NotificationContext } from '../context/NotificationContext';
+import { blogApi } from '../api/blogApi';
+import axiosInstance from '../api/axiosConfig';
 import { MOCK_BLOGS, MOCK_EVENTS } from '../mockData';
 import { DashboardLayout } from '../components/DashboardLayout';
 import {
@@ -12,6 +14,30 @@ export const AdminDashboardPage = () => {
   const { broadcastAnnouncement } = useContext(NotificationContext);
 
   const [activeTab, setActiveTab] = useState('categories'); // 'categories', 'users', 'content', 'broadcast'
+  const [blogsList, setBlogsList] = useState([]);
+  const [eventsList, setEventsList] = useState([]);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const res = await blogApi.getBlogs(0, 100);
+        const data = res?.content || (Array.isArray(res) ? res : []);
+        setBlogsList(data.length > 0 ? data : MOCK_BLOGS);
+      } catch {
+        setBlogsList(MOCK_BLOGS);
+      }
+
+      try {
+        const evRes = await axiosInstance.get('/events');
+        const evData = Array.isArray(evRes.data) ? evRes.data : [];
+        setEventsList(evData.length > 0 ? evData : MOCK_EVENTS);
+      } catch {
+        setEventsList(MOCK_EVENTS);
+      }
+    };
+    fetchContent();
+  }, []);
+
 
   // New Category Form State
   const [newCatName, setNewCatName] = useState('');
@@ -278,36 +304,37 @@ export const AdminDashboardPage = () => {
         {activeTab === 'content' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div className="wpc-card">
-              <h3 className="wpc-card-title">Published Articles Moderation ({MOCK_BLOGS.length})</h3>
+              <h3 className="wpc-card-title">Published Articles Moderation ({blogsList.length})</h3>
               <div>
-                {MOCK_BLOGS.map(blog => (
+                {blogsList.map(blog => (
                   <div key={blog.id} className="wpc-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                       <h4 style={{ fontWeight: 700, fontSize: '14px' }} className="text-heading">{blog.title}</h4>
-                      <p style={{ fontSize: '12px' }} className="text-muted-wpc">{blog.category?.name} → {blog.subCategoryName || 'General'} | By {blog.author?.name}</p>
+                      <p style={{ fontSize: '12px' }} className="text-muted-wpc">{blog.category?.name} → {blog.subCategoryName || 'General'} | By {blog.author?.fullName || blog.author?.name || blog.author?.username || 'Author'}</p>
                     </div>
-                    <span className="badge badge-success">PUBLISHED</span>
+                    <span className="badge badge-success">{blog.status || 'PUBLISHED'}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="wpc-card">
-              <h3 className="wpc-card-title">Upcoming Events Moderation ({MOCK_EVENTS.length})</h3>
+              <h3 className="wpc-card-title">Upcoming Events Moderation ({eventsList.length})</h3>
               <div>
-                {MOCK_EVENTS.map(event => (
+                {eventsList.map(event => (
                   <div key={event.id} className="wpc-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                       <h4 style={{ fontWeight: 700, fontSize: '14px' }} className="text-heading">{event.title}</h4>
                       <p style={{ fontSize: '12px' }} className="text-muted-wpc">{event.categoryName} → {event.subCategoryName} | {event.eventDate} @ {event.location}</p>
                     </div>
-                    <span className="badge badge-pink">{event.status}</span>
+                    <span className="badge badge-pink">{event.status || 'UPCOMING'}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
         )}
+
 
         {/* TAB 4: REAL-TIME BROADCAST */}
         {activeTab === 'broadcast' && (

@@ -19,6 +19,7 @@ public class BlogResponse {
     private Long commentsCount;
     private UserResponse author;
     private Category category;
+    private String subCategoryName;
     private Set<Tag> tags;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -61,6 +62,9 @@ public class BlogResponse {
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
 
+    public String getSubCategoryName() { return subCategoryName; }
+    public void setSubCategoryName(String subCategoryName) { this.subCategoryName = subCategoryName; }
+
     public Set<Tag> getTags() { return tags; }
     public void setTags(Set<Tag> tags) { this.tags = tags; }
 
@@ -70,3 +74,4 @@ public class BlogResponse {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
+

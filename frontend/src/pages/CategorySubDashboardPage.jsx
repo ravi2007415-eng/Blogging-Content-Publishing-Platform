@@ -1,6 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CategoryContext } from '../context/CategoryContext';
+import { blogApi } from '../api/blogApi';
+import axiosInstance from '../api/axiosConfig';
 import { BlogCard } from '../components/BlogCard';
 import { EventCard } from '../components/EventCard';
 import { MOCK_BLOGS, MOCK_EVENTS } from '../mockData';
@@ -10,6 +12,29 @@ export const CategorySubDashboardPage = () => {
   const { categorySlug, subCategorySlug } = useParams();
   const { categories, getCategoryBySlug } = useContext(CategoryContext);
   const [activeTab, setActiveTab] = useState('all'); // 'all', 'posts', 'events'
+  const [blogsList, setBlogsList] = useState([]);
+  const [eventsList, setEventsList] = useState([]);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const res = await blogApi.getBlogs(0, 100);
+        const data = res?.content || (Array.isArray(res) ? res : []);
+        setBlogsList(data.length > 0 ? data : MOCK_BLOGS);
+      } catch {
+        setBlogsList(MOCK_BLOGS);
+      }
+
+      try {
+        const evRes = await axiosInstance.get('/events');
+        const evData = Array.isArray(evRes.data) ? evRes.data : [];
+        setEventsList(evData.length > 0 ? evData : MOCK_EVENTS);
+      } catch {
+        setEventsList(MOCK_EVENTS);
+      }
+    };
+    fetchContent();
+  }, [categorySlug]);
 
   const currentCategory = getCategoryBySlug(categorySlug) || {
     name: categorySlug ? categorySlug.toUpperCase() : 'Category',
@@ -23,32 +48,33 @@ export const CategorySubDashboardPage = () => {
     : null;
 
   // Filter posts matching category and sub-category
-  const filteredPosts = MOCK_BLOGS.filter(blog => {
-    const matchesCategory = blog.category?.slug.toLowerCase() === categorySlug?.toLowerCase() ||
-                            blog.category?.name.toLowerCase() === currentCategory.name.toLowerCase();
+  const filteredPosts = blogsList.filter(blog => {
+    const matchesCategory = blog.category?.slug?.toLowerCase() === categorySlug?.toLowerCase() ||
+                            blog.category?.name?.toLowerCase() === currentCategory.name?.toLowerCase();
     
     if (!matchesCategory) return false;
 
     if (subCategorySlug) {
-      return blog.subCategoryName?.toLowerCase() === activeSubCategory?.name.toLowerCase() ||
+      return blog.subCategoryName?.toLowerCase() === activeSubCategory?.name?.toLowerCase() ||
              blog.subCategoryName?.toLowerCase() === subCategorySlug.toLowerCase();
     }
     return true;
   });
 
   // Filter events matching category and sub-category
-  const filteredEvents = MOCK_EVENTS.filter(event => {
-    const matchesCategory = event.categoryName.toLowerCase() === currentCategory.name.toLowerCase() ||
-                            event.categoryName.toLowerCase() === categorySlug?.toLowerCase();
+  const filteredEvents = eventsList.filter(event => {
+    const matchesCategory = event.categoryName?.toLowerCase() === currentCategory.name?.toLowerCase() ||
+                            event.categoryName?.toLowerCase() === categorySlug?.toLowerCase();
     
     if (!matchesCategory) return false;
 
     if (subCategorySlug) {
-      return event.subCategoryName.toLowerCase() === activeSubCategory?.name.toLowerCase() ||
-             event.subCategoryName.toLowerCase() === subCategorySlug.toLowerCase();
+      return event.subCategoryName?.toLowerCase() === activeSubCategory?.name?.toLowerCase() ||
+             event.subCategoryName?.toLowerCase() === subCategorySlug?.toLowerCase();
     }
     return true;
   });
+
 
   return (
     <div className="page-container category-subdashboard-page space-y-6">

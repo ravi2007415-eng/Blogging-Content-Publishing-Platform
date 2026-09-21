@@ -14,6 +14,8 @@ import com.blog.platform.model.enums.Role;
 import com.blog.platform.repository.*;
 import com.blog.platform.service.BlogService;
 import com.blog.platform.util.ValidationUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,12 +23,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class BlogServiceImpl implements BlogService {
+
+    private static final Logger logger = LoggerFactory.getLogger(BlogServiceImpl.class);
 
     private final BlogRepository blogRepository;
     private final UserRepository userRepository;
@@ -59,7 +64,7 @@ public class BlogServiceImpl implements BlogService {
     public BlogResponse getBlogById(Long id) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Blog post not found with ID: " + id));
-        blog.setViewsCount(blog.getViewsCount() + 1);
+        blog.setViewsCount((blog.getViewsCount() != null ? blog.getViewsCount() : 0) + 1);
         Blog saved = blogRepository.save(blog);
         return mapToBlogResponse(saved);
     }
@@ -69,7 +74,7 @@ public class BlogServiceImpl implements BlogService {
     public BlogResponse getBlogBySlug(String slug) {
         Blog blog = blogRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Blog post not found with slug: " + slug));
-        blog.setViewsCount(blog.getViewsCount() + 1);
+        blog.setViewsCount((blog.getViewsCount() != null ? blog.getViewsCount() : 0) + 1);
         Blog saved = blogRepository.save(blog);
         return mapToBlogResponse(saved);
     }
@@ -77,41 +82,106 @@ public class BlogServiceImpl implements BlogService {
     @Override
     @Transactional
     public BlogResponse createBlog(BlogRequest request, String currentUsername) {
+        if (currentUsername == null || currentUsername.isBlank()) {
+            throw new UnauthorizedException("User authentication required to publish an article.");
+        }
+
         User author = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found: " + currentUsername));
 
-        Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
+        Category category = resolveCategory(request);
 
         Blog blog = new Blog();
-        blog.setTitle(request.getTitle());
-        String baseSlug = validationUtil.toSlug(request.getTitle());
-        blog.setSlug(baseSlug + "-" + System.currentTimeMillis() % 10000);
-        blog.setSummary(request.getSummary());
-        blog.setContent(request.getContent());
+        blog.setTitle(request.getTitle().trim());
+
+        // Slug generation with collision avoidance
+        String baseSlug = (request.getSlug() != null && !request.getSlug().isBlank())
+                ? validationUtil.toSlug(request.getSlug())
+                : validationUtil.toSlug(request.getTitle());
+        
+        if (baseSlug == null || baseSlug.isBlank()) {
+            baseSlug = "article-" + System.currentTimeMillis();
+        }
+
+        String candidateSlug = baseSlug;
+        int suffix = 1;
+        while (blogRepository.existsBySlug(candidateSlug)) {
+            candidateSlug = baseSlug + "-" + suffix + "-" + (System.currentTimeMillis() % 10000);
+            suffix++;
+        }
+        blog.setSlug(candidateSlug);
+
+        // Summary
+        if (request.getSummary() != null && !request.getSummary().isBlank()) {
+            blog.setSummary(request.getSummary().trim());
+        } else {
+            String content = request.getContent() != null ? request.getContent().trim() : "";
+            blog.setSummary(content.length() > 200 ? content.substring(0, 197) + "..." : content);
+        }
+
+        blog.setContent(request.getContent() != null ? request.getContent().trim() : "");
         blog.setCoverImageUrl(request.getCoverImageUrl() != null && !request.getCoverImageUrl().isBlank()
-                ? request.getCoverImageUrl() : "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800");
-        blog.setStatus(request.getStatus() != null ? request.getStatus() : BlogStatus.DRAFT);
+                ? request.getCoverImageUrl().trim()
+                : "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80");
+        blog.setStatus(request.getStatus() != null ? request.getStatus() : BlogStatus.PUBLISHED);
+        blog.setSubCategoryName(request.getSubCategoryName() != null && !request.getSubCategoryName().isBlank()
+                ? request.getSubCategoryName().trim() : "General");
         blog.setAuthor(author);
         blog.setCategory(category);
+        blog.setViewsCount(0);
 
         if (request.getTagNames() != null && !request.getTagNames().isEmpty()) {
             Set<Tag> tags = new HashSet<>();
             for (String tagName : request.getTagNames()) {
-                String slug = validationUtil.toSlug(tagName);
-                Tag tag = tagRepository.findBySlug(slug).orElseGet(() -> {
-                    Tag newTag = new Tag();
-                    newTag.setName(tagName.trim());
-                    newTag.setSlug(slug);
-                    return tagRepository.save(newTag);
-                });
-                tags.add(tag);
+                if (tagName != null && !tagName.isBlank()) {
+                    String slug = validationUtil.toSlug(tagName.trim());
+                    Tag tag = tagRepository.findBySlug(slug).orElseGet(() -> {
+                        Tag newTag = new Tag();
+                        newTag.setName(tagName.trim());
+                        newTag.setSlug(slug);
+                        return tagRepository.save(newTag);
+                    });
+                    tags.add(tag);
+                }
             }
             blog.setTags(tags);
         }
 
         Blog saved = blogRepository.save(blog);
+        logger.info("Successfully persisted blog article in MySQL: ID={}, slug={}, author={}, category={}",
+                saved.getId(), saved.getSlug(), author.getUsername(), category.getName());
+
         return mapToBlogResponse(saved);
+    }
+
+    private Category resolveCategory(BlogRequest request) {
+        if (request.getCategoryId() != null) {
+            Optional<Category> byId = categoryRepository.findById(request.getCategoryId());
+            if (byId.isPresent()) return byId.get();
+        }
+
+        if (request.getCategorySlug() != null && !request.getCategorySlug().isBlank()) {
+            Optional<Category> bySlug = categoryRepository.findBySlugIgnoreCase(request.getCategorySlug().trim());
+            if (bySlug.isPresent()) return bySlug.get();
+        }
+
+        if (request.getCategoryName() != null && !request.getCategoryName().isBlank()) {
+            Optional<Category> byName = categoryRepository.findByNameIgnoreCase(request.getCategoryName().trim());
+            if (byName.isPresent()) return byName.get();
+        }
+
+        // Try to get any existing category
+        List<Category> allCategories = categoryRepository.findAll();
+        if (!allCategories.isEmpty()) {
+            return allCategories.get(0);
+        }
+
+        // Auto create default category if database is completely empty
+        String catName = (request.getCategoryName() != null && !request.getCategoryName().isBlank())
+                ? request.getCategoryName().trim() : "Technology";
+        String catSlug = validationUtil.toSlug(catName);
+        Category defaultCategory = new Category(null, catName, catSlug, "General Content Channel");
+        return categoryRepository.save(defaultCategory);
     }
 
     @Override
@@ -127,31 +197,33 @@ public class BlogServiceImpl implements BlogService {
             throw new UnauthorizedException("You are not authorized to update this blog post");
         }
 
-        if (request.getTitle() != null) {
-            blog.setTitle(request.getTitle());
+        if (request.getTitle() != null && !request.getTitle().isBlank()) {
+            blog.setTitle(request.getTitle().trim());
         }
-        if (request.getSummary() != null) blog.setSummary(request.getSummary());
-        if (request.getContent() != null) blog.setContent(request.getContent());
-        if (request.getCoverImageUrl() != null) blog.setCoverImageUrl(request.getCoverImageUrl());
+        if (request.getSummary() != null) blog.setSummary(request.getSummary().trim());
+        if (request.getContent() != null && !request.getContent().isBlank()) blog.setContent(request.getContent().trim());
+        if (request.getCoverImageUrl() != null) blog.setCoverImageUrl(request.getCoverImageUrl().trim());
         if (request.getStatus() != null) blog.setStatus(request.getStatus());
+        if (request.getSubCategoryName() != null) blog.setSubCategoryName(request.getSubCategoryName().trim());
 
-        if (request.getCategoryId() != null) {
-            Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
+        if (request.getCategoryId() != null || request.getCategorySlug() != null || request.getCategoryName() != null) {
+            Category category = resolveCategory(request);
             blog.setCategory(category);
         }
 
         if (request.getTagNames() != null) {
             Set<Tag> tags = new HashSet<>();
             for (String tagName : request.getTagNames()) {
-                String slug = validationUtil.toSlug(tagName);
-                Tag tag = tagRepository.findBySlug(slug).orElseGet(() -> {
-                    Tag newTag = new Tag();
-                    newTag.setName(tagName.trim());
-                    newTag.setSlug(slug);
-                    return tagRepository.save(newTag);
-                });
-                tags.add(tag);
+                if (tagName != null && !tagName.isBlank()) {
+                    String slug = validationUtil.toSlug(tagName.trim());
+                    Tag tag = tagRepository.findBySlug(slug).orElseGet(() -> {
+                        Tag newTag = new Tag();
+                        newTag.setName(tagName.trim());
+                        newTag.setSlug(slug);
+                        return tagRepository.save(newTag);
+                    });
+                    tags.add(tag);
+                }
             }
             blog.setTags(tags);
         }
@@ -207,16 +279,19 @@ public class BlogServiceImpl implements BlogService {
         res.setContent(blog.getContent());
         res.setCoverImageUrl(blog.getCoverImageUrl());
         res.setStatus(blog.getStatus());
-        res.setViewsCount(blog.getViewsCount());
+        res.setSubCategoryName(blog.getSubCategoryName());
+        res.setViewsCount(blog.getViewsCount() != null ? blog.getViewsCount() : 0);
         res.setLikesCount(likeRepository.countByBlogId(blog.getId()));
         res.setCommentsCount(commentRepository.countByBlogId(blog.getId()));
 
         User author = blog.getAuthor();
-        res.setAuthor(new UserResponse(
-                author.getId(), author.getUsername(), author.getEmail(),
-                author.getFullName(), author.getBio(), author.getAvatarUrl(),
-                author.getRole(), author.getEnabled(), author.getCreatedAt()
-        ));
+        if (author != null) {
+            res.setAuthor(new UserResponse(
+                    author.getId(), author.getUsername(), author.getEmail(),
+                    author.getFullName(), author.getBio(), author.getAvatarUrl(),
+                    author.getRole(), author.getEnabled(), author.getCreatedAt()
+            ));
+        }
         res.setCategory(blog.getCategory());
         res.setTags(blog.getTags());
         res.setCreatedAt(blog.getCreatedAt());
@@ -224,3 +299,4 @@ public class BlogServiceImpl implements BlogService {
         return res;
     }
 }
+

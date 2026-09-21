@@ -1,16 +1,36 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { blogApi } from '../api/blogApi';
 import { MOCK_BLOGS } from '../mockData';
 import { BlogCard } from '../components/BlogCard';
-import { Mail, PenSquare, Bookmark, ShieldCheck } from 'lucide-react';
+import { Mail, PenSquare, Bookmark, ShieldCheck, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const ProfilePage = () => {
-  const { user } = useContext(AuthContext);
+  const { user, isAuthenticated } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('published');
+  const [myBlogs, setMyBlogs] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const myBlogs = MOCK_BLOGS.filter(b => b.author?.email === user?.email || b.author?.id === user?.id || true);
+  useEffect(() => {
+    const fetchUserArticles = async () => {
+      if (!isAuthenticated) return;
+      setLoading(true);
+      try {
+        const data = await blogApi.getMyBlogs();
+        setMyBlogs(Array.isArray(data) ? data : []);
+      } catch {
+        const fallback = MOCK_BLOGS.filter(b => b.author?.email === user?.email || b.author?.id === user?.id || true);
+        setMyBlogs(fallback);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserArticles();
+  }, [isAuthenticated, user]);
+
   const bookmarkedBlogs = MOCK_BLOGS.filter(b => b.isBookmarked);
+
 
   return (
     <div className="profile-page-container space-y-6">

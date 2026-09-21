@@ -1,6 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { CategoryContext } from '../context/CategoryContext';
+import { blogApi } from '../api/blogApi';
 import { BlogCard } from '../components/BlogCard';
 import { MOCK_BLOGS } from '../mockData';
 import { Bookmark, Layers, Sparkles } from 'lucide-react';
@@ -9,7 +10,21 @@ import { Link } from 'react-router-dom';
 export const UserDashboardPage = () => {
   const { user } = useContext(AuthContext);
   const { categories } = useContext(CategoryContext);
+  const [blogsList, setBlogsList] = useState([]);
   const [followedCats, setFollowedCats] = useState(['Sports', 'Technology', 'Events', 'AI & Machine Learning']);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await blogApi.getBlogs(0, 100);
+        const data = res?.content || (Array.isArray(res) ? res : []);
+        setBlogsList(data.length > 0 ? data : MOCK_BLOGS);
+      } catch {
+        setBlogsList(MOCK_BLOGS);
+      }
+    };
+    fetchBlogs();
+  }, []);
 
   const toggleFollow = (catName) => {
     setFollowedCats(prev => 
@@ -17,9 +32,10 @@ export const UserDashboardPage = () => {
     );
   };
 
-  const personalizedPosts = MOCK_BLOGS.filter(b => 
-    followedCats.some(fc => fc.toLowerCase() === b.category?.name.toLowerCase())
+  const personalizedPosts = blogsList.filter(b => 
+    followedCats.some(fc => fc.toLowerCase() === b.category?.name?.toLowerCase())
   );
+
 
   return (
     <div className="page-container user-dashboard-page space-y-6">

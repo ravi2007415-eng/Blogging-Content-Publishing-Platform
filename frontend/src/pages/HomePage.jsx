@@ -1,11 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { MOCK_BLOGS } from '../mockData';
 import { CategoryContext } from '../context/CategoryContext';
+import { blogApi } from '../api/blogApi';
 import { BlogCard } from '../components/BlogCard';
 import { LiveTicker } from '../components/LiveTicker';
 import { 
   Sparkles, TrendingUp, SearchX,
-  ArrowRight, Layers
+  ArrowRight, Layers, Loader2
 } from 'lucide-react';
 import { useSearchParams, Link } from 'react-router-dom';
 
@@ -22,12 +23,35 @@ const TRENDING_SEARCHES = [
 
 export const HomePage = ({ searchQuery }) => {
   const { categories } = useContext(CategoryContext);
-  const [blogs] = useState(MOCK_BLOGS);
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   
   const urlQuery = searchParams.get('q') || searchQuery || '';
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      setLoading(true);
+      try {
+        const res = await blogApi.getBlogs(0, 50);
+        const fetchedBlogs = res?.content || (Array.isArray(res) ? res : []);
+        if (fetchedBlogs.length > 0) {
+          setBlogs(fetchedBlogs);
+        } else {
+          // If database has no blogs yet, fallback to sample mock blogs so UI is never empty on clean install
+          setBlogs(MOCK_BLOGS);
+        }
+      } catch (err) {
+        console.warn('Backend blogs fetch returned fallback to mock data:', err.message);
+        setBlogs(MOCK_BLOGS);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, []);
 
   // Get selected category object if any
   const currentCategoryObj = categories.find(c => c.slug === selectedCategory);
