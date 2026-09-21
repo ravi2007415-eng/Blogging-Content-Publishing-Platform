@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
         user.setBio(request.getBio());
         user.setAvatarUrl(request.getAvatarUrl() != null && !request.getAvatarUrl().isBlank() 
                 ? request.getAvatarUrl() : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150");
-        user.setRole(Role.ROLE_USER);
+        user.setRole(Role.ROLE_AUTHOR);
         user.setEnabled(true);
         user.setEmailVerified(true);
         user.setAuthProvider("LOCAL");
@@ -191,7 +191,7 @@ public class AuthServiceImpl implements AuthService {
             newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
             newUser.setFullName(finalName);
             newUser.setAvatarUrl(finalPicture != null ? finalPicture : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150");
-            newUser.setRole(Role.ROLE_USER);
+            newUser.setRole(Role.ROLE_AUTHOR);
             newUser.setEnabled(true);
             newUser.setEmailVerified(true);
             newUser.setAuthProvider("GOOGLE");
